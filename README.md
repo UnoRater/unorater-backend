@@ -13,3 +13,5 @@
 *	Select Database Engine, select the drop-down on Server name field
 *	Select Windows Authentication
 *	Click connect
+
+# IntelliJ Ultimate Edition for student link : https://www.jetbrains.com/shop/eform/students
