@@ -17,11 +17,11 @@ When making a PR please:
 *	Go to https://www.microsoft.com/en-us/sql-server/sql-server-downloads
 *	Scroll down, download 2019 Express Edition, and Install (choose basic option for installation)
 
-# Setting connecting to your local database engine on SQL Server Management Studio
+# Setting up connection to your local database engine on SQL Server Management Studio
 *	In the Object Explorer, click on Connect
 *	Select Database Engine, select the drop-down on Server name field
 *	Select Windows Authentication
 *	Click connect
 
-# IntelliJ Ultimate Edition for student link
+# IntelliJ Ultimate Edition for students link
 * https://www.jetbrains.com/shop/eform/students
