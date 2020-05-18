@@ -1,6 +1,17 @@
 # Unorater-backend
 * Spring boot application for Unorater backend
 
+# Clone this repository (Windows OS)
+* Download and install git here: https://gitforwindows.org/
+* Open git bash
+* Clone repo into preferred location
+
+# Create application.properties file
+* In your IDE, navigate to the resources folder: src/main/resources
+* Create a file named "application.properties" in the resources folder
+* Copy the contents of the application.properties.template into the file
+* Assign secret values supplied in the "secrets" channel on discord to necessary the variables
+
 # PULL REQUESTS
 When making a PR please:
 * Checkout new branch like so: checkout -b DEV_#[issue_number_here]
