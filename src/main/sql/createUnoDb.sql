@@ -41,11 +41,9 @@ CREATE TABLE
     dbo.[Services]
 (
     serviceId BIGINT PRIMARY KEY NOT NULL IDENTITY(1,1),
-    userId BIGINT NOT NULL,
     departmentId BIGINT NOT NULL,
     serviceName VARCHAR(50) NOT NULL,
     dateCreated DATETIME NOT NULL,
-    FOREIGN KEY (userId) REFERENCES Users(userId),
     FOREIGN KEY (departmentId) REFERENCES Departments(departmentId)
 )
 GO
