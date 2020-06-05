@@ -1,0 +1,9 @@
+# Server Port
+server.port=8080
+
+# SQL Server for localhost
+spring.datasource.url=jdbc:sqlserver://localhost;databaseName=
+#spring.datasource.username=
+#spring.datasource.password=
+spring.datasource.driverClassName=com.microsoft.sqlserver.jdbc.SQLServerDriver
+spring.jpa.hibernate.dialect=org.hibernate.dialect.SQLServer2012Dialect

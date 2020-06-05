@@ -3,19 +3,22 @@ package com.ics499.unorater.models;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
+/**
+ * Model for the Services entity.
+ *
+ * @author UNO TEAM
+ */
 @Entity
 @Table(name="SERVICES")
 public class Service {
 
     @Id
-    @GeneratedValue
-    @Column(name = "SERVICEID", columnDefinition = "INT")
+    @Column(name = "SERVICEID", columnDefinition = "BIGINT")
     private int serviceID;
 
     @ManyToOne
-    @JoinColumn(name = "DEPARTMENTID", nullable = false)
+    @JoinColumn(name = "DEPARTMENTID", nullable = false, insertable=false, updatable=false)
     private Department department;
 
     @Column(name = "SERVICENAME")
@@ -29,7 +32,7 @@ public class Service {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "SERVICEID", nullable = false)
+    @JoinColumn(name = "SERVICEID", nullable = false, insertable=false, updatable=false)
     private Service service;
 
 

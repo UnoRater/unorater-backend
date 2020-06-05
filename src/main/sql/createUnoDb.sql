@@ -13,6 +13,8 @@ GO
 DROP TABLE IF EXISTS dbo.[Reviews]
 DROP TABLE IF EXISTS dbo.[Services]
 DROP TABLE IF EXISTS dbo.[Departments]
+DROP TABLE IF EXISTS dbo.[UsersRoles]
+DROP TABLE IF EXISTS dbo.[Roles]
 DROP TABLE IF EXISTS dbo.[Users]
 
 /** Create tables */
@@ -20,7 +22,15 @@ CREATE TABLE
     dbo.Departments
 (
     departmentId BIGINT PRIMARY KEY NOT NULL IDENTITY(1,1),
-    departmentName VARCHAR(50) NOT NULL,
+    departmentName VARCHAR(50) NOT NULL
+)
+GO
+
+CREATE TABLE
+    dbo.Roles
+(
+    roleId BIGINT PRIMARY KEY NOT NULL IDENTITY(1,1),
+    roleName VARCHAR(20)
 )
 GO
 
@@ -28,12 +38,22 @@ CREATE TABLE
     dbo.Users
 (
     userId BIGINT PRIMARY KEY NOT NULL IDENTITY(1,1),
-    userName VARCHAR(20) NOT NULL,
-    passwordHash BINARY(64) NOT NULL,
-    salt UNIQUEIDENTIFIER NOT NULL,
-    email VARCHAR (20) NOT NULL,
+    userName VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR (255) NOT NULL,
     isAdmin BIT NOT NULL,
-    dateCreated DATETIME NOT NULL
+    dateCreated DATETIME NOT NULL,
+    UNIQUE (email)
+)
+GO
+
+CREATE TABLE
+    dbo.UsersRoles
+(
+    userId BIGINT NOT NULL,
+    roleId BIGINT NOT NULL,
+    FOREIGN KEY (userId) REFERENCES Users(userId),
+    FOREIGN KEY (roleId) REFERENCES Roles(roleId)
 )
 GO
 
@@ -61,80 +81,6 @@ CREATE TABLE
     FOREIGN KEY (serviceId) REFERENCES [Services](serviceId)
 )
 GO
-
-/** Stored procedures for user authentication */
-DROP PROCEDURE IF EXISTS dbo.spAddUser
-GO
-
-CREATE PROCEDURE dbo.spAddUser
-    @puserName VARCHAR(20),
-    @ppassword VARCHAR(50),
-    @pemail VARCHAR(50),
-    @pdateCreated DATETIME,
-    @pisAdmin BIT,
-    @responseMessage VARCHAR(250) OUTPUT
-AS
-BEGIN
-    SET NOCOUNT ON
-    DECLARE @salt UNIQUEIDENTIFIER = NEWID()
-    BEGIN TRY
-        INSERT INTO dbo.[Users] (userName, passwordHash, salt, email, isAdmin, dateCreated)
-        VALUES(@puserName, HASHBYTES('SHA2_512', @ppassword+CAST(@salt AS VARCHAR(36))), @salt, @pemail, @pisAdmin, @pdateCreated)
-        SET @responseMessage='Success'
-    END TRY
-    BEGIN CATCH
-        SET @responseMessage=ERROR_MESSAGE()
-    END CATCH
-END
-GO
-
-DROP PROCEDURE IF EXISTS dbo.spLogin
-GO
-CREATE PROCEDURE dbo.spLogin
-    @puserName VARCHAR(20),
-    @ppassword VARCHAR(50),
-    @responseMessage VARCHAR(250)='' OUTPUT
-AS
-BEGIN
-    SET NOCOUNT ON
-    DECLARE @userId INT
-    IF EXISTS (SELECT TOP 1 userId FROM [dbo].[Users] WHERE user=@puserName)
-        BEGIN
-            SET @userID=(SELECT userId FROM [dbo].[Users] WHERE userName=@puserName AND passwordHash=HASHBYTES('SHA2_512', @ppassword+CAST(Salt AS VARCHAR(36))))
-
-            IF(@userID IS NULL)
-                SET @responseMessage='Incorrect password'
-            ELSE
-                SET @responseMessage='User successfully logged in'
-        END
-    ELSE
-        SET @responseMessage='Invalid login'
-END
-GO
-
-DROP PROCEDURE IF EXISTS dbo.spAdminLogin
-GO
-CREATE PROCEDURE dbo.spAdminLogin
-    @puserName VARCHAR(20),
-    @ppassword VARCHAR(50),
-    @responseMessage VARCHAR(250)='' OUTPUT
-AS
-BEGIN
-    SET NOCOUNT ON
-    DECLARE @userId INT
-    IF EXISTS (SELECT TOP 1 userId FROM [dbo].[Users] WHERE user=@puserName)
-        BEGIN
-            SET @userID=(SELECT userId FROM [dbo].[Users] WHERE userName=@puserName AND passwordHash=HASHBYTES('SHA2_512', @ppassword+CAST(Salt AS VARCHAR(36))) AND isAdmin = 1)
-
-            IF(@userID IS NULL)
-                SET @responseMessage='Incorrect password'
-            ELSE
-                SET @responseMessage='User successfully logged in'
-        END
-    ELSE
-        SET @responseMessage='Invalid login'
-END
-
 
 
 
