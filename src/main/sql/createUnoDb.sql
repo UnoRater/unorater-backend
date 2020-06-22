@@ -65,7 +65,7 @@ CREATE TABLE
     servicename VARCHAR(800) NOT NULL,
     servicedescription VARCHAR(800) NULL,
     datecreated DATETIME NOT NULL,
-    publicService BIT NOT NULL,
+    publicservice BIT NOT NULL,
     FOREIGN KEY (departmentid) REFERENCES Departments(departmentid)
 )
 GO
@@ -158,7 +158,7 @@ INSERT INTO [dbo].[Services]
             ,[servicename]
             ,[servicedescription]
             ,[datecreated]
-            ,[publicService])
+            ,[publicservice])
         VALUES
             (1
             ,1
@@ -176,7 +176,7 @@ INSERT INTO [dbo].[Services]
         ,[servicename]
         ,[servicedescription]
         ,[datecreated]
-        ,[publicService])
+        ,[publicservice])
     VALUES
         (2
         ,2
