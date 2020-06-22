@@ -1,5 +1,9 @@
 package com.ics499.unorater.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -9,27 +13,33 @@ import java.util.Date;
  * @author UNO TEAM
  */
 @Entity
+@JsonInclude
 @Table(name="REVIEWS")
 public class Review {
 
     @Id
     @GeneratedValue
-    @Column(name="reviewID", columnDefinition = "INT")
+    @Column(name="REVIEWID", columnDefinition = "INT")
     private int reviewID;
 
-    @Column(name="USERNAME")
-    private String userName;
+    @Column(name="USERID")
+    private int userID;
 
-    @Column(name="EMAIL")
-    private String email;
+    @Column(name="SERVICEID")
+    private int serviceID;
 
+    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name="USERID", nullable=false)
+    @JoinColumn(name="USERID", insertable = false, updatable = false)
     private User user;
 
+    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name="SERVICEID", nullable=false)
+    @JoinColumn(name="SERVICEID", nullable=false, insertable = false, updatable = false)
     private Service service;
+
+    @Transient
+    private String serviceName;
 
     @Column(name="REVIEWTEXT")
     private String reviewText;
@@ -48,20 +58,12 @@ public class Review {
         this.reviewID = reviewID;
     }
 
-    public String getUserName() {
-        return userName;
+    public int getUserID() {
+        return userID;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUserID(int userID) {
+        this.userID = userID;
     }
 
     public User getUser() {
@@ -80,7 +82,7 @@ public class Review {
         this.service = service;
     }
 
-    public String isReviewText() {
+    public String getReviewText() {
         return reviewText;
     }
 
@@ -102,5 +104,31 @@ public class Review {
 
     public void setDateModified(Date dateModified) {
         this.dateModified = dateModified;
+    }
+
+    public int getServiceID() {
+        return serviceID;
+    }
+
+    public void setServiceID(int serviceID) {
+        this.serviceID = serviceID;
+    }
+
+    @JsonInclude
+    public String getServiceName() {
+        return service.getServiceName();
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    @Override
+    public String toString() {
+        return "Review {" +
+                "userID=" + userID +
+                ", serviceID='" + serviceID + '\'' +
+                ", reviewText='" + reviewText + '\'' +
+                '}';
     }
 }

@@ -1,5 +1,8 @@
 package com.ics499.unorater.models;
 
+import com.ics499.unorater.models.enums.RoleName;
+import org.hibernate.annotations.NaturalId;
+
 import javax.persistence.*;
 
 /**
@@ -12,16 +15,17 @@ import javax.persistence.*;
 public class Role {
 
     @Id
+    @GeneratedValue
     @Column(name="ROLEID", columnDefinition = "BIGINT")
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String name;
+
+
+    @Enumerated(EnumType.STRING)
+    @NaturalId
+    @Column(name= "ROLENAME", length = 60)
+    private RoleName name;
 
     public Role() {}
-
-    public Role(String name) {
-        this.name = name;
-    }
 
     public Long getId() {
         return id;
@@ -31,11 +35,11 @@ public class Role {
         this.id = id;
     }
 
-    public String getName() {
+    public RoleName getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(RoleName name) {
         this.name = name;
     }
 

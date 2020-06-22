@@ -3,7 +3,14 @@ server.port=8080
 
 # SQL Server for localhost
 spring.datasource.url=jdbc:sqlserver://localhost;databaseName=
-#spring.datasource.username=
-#spring.datasource.password=
+spring.datasource.username=
+spring.datasource.password=
 spring.datasource.driverClassName=com.microsoft.sqlserver.jdbc.SQLServerDriver
 spring.jpa.hibernate.dialect=org.hibernate.dialect.SQLServer2012Dialect
+
+## App Properties
+app.jwtSecret=
+## 7 Days
+app.jwtExpirationInMs = 604800000
+
+spring.jpa.hibernate.use-new-id-generator-mappings = false

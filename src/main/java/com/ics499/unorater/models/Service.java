@@ -1,8 +1,13 @@
 package com.ics499.unorater.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Model for the Services entity.
@@ -14,9 +19,14 @@ import java.util.List;
 public class Service {
 
     @Id
+    @GeneratedValue
     @Column(name = "SERVICEID", columnDefinition = "BIGINT")
     private int serviceID;
 
+    @Column(name = "DEPARTMENTID")
+    private int departmentID;
+
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "DEPARTMENTID", nullable = false, insertable=false, updatable=false)
     private Department department;
@@ -24,20 +34,17 @@ public class Service {
     @Column(name = "SERVICENAME")
     private String serviceName;
 
+    @Column(name = "SERVICEDESCRIPTION")
+    private String serviceDescription;
+
     @OneToMany(mappedBy="service")
-    private List<Review> reviews;
-
-    @ManyToOne
-    @JoinColumn(name = "USERID", nullable = false)
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "SERVICEID", nullable = false, insertable=false, updatable=false)
-    private Service service;
-
+    private Set<Review> reviews;
 
     @Column(name = "DATECREATED")
     private Date dateCreated;
+
+    @Column(name = "PUBLICSERVICE")
+    private boolean publicService;
 
     public int getServiceID() {
         return serviceID;
@@ -63,28 +70,12 @@ public class Service {
         this.serviceName = serviceName;
     }
 
-    public List<Review> getReviews() {
+    public Set<Review> getReviews() {
         return reviews;
     }
 
-    public void setReviews(List<Review> reviews) {
+    public void setReviews(Set<Review> reviews) {
         this.reviews = reviews;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Service getService() {
-        return service;
-    }
-
-    public void setService(Service service) {
-        this.service = service;
     }
 
     public Date getDateCreated() {
@@ -93,5 +84,43 @@ public class Service {
 
     public void setDateCreated(Date dateCreated) {
         this.dateCreated = dateCreated;
+    }
+
+    public String getServiceDescription() {
+        return serviceDescription;
+    }
+
+    public void setServiceDescription(String serviceDescription) {
+        this.serviceDescription = serviceDescription;
+    }
+
+    public int getDepartmentID() {
+        return departmentID;
+    }
+
+    /*
+    @JsonInclude
+    public Set <Review> getNonFlaggedReviews () {
+
+        Set <Review> nFlagged = new HashSet<>();
+        for (Review review : reviews) {
+            if (!review.isFlagged()) {
+                nFlagged.add(review);
+            }
+        }
+        return nFlagged;
+    }
+     */
+
+    public void setDepartmentID(int departmentID) {
+        this.departmentID = departmentID;
+    }
+
+    public boolean isPublicService() {
+        return publicService;
+    }
+
+    public void setPublicService(boolean publicService) {
+        this.publicService = publicService;
     }
 }
