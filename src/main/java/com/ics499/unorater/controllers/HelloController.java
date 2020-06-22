@@ -9,7 +9,6 @@ public class HelloController {
 
     @RequestMapping(value = "/{name}", method = RequestMethod.GET)
     public String index(@PathVariable String name) {
-        return "Hello " + name + ", Greetings from Spring Boot!";
+        return "Hello " + (name == null ? "World" : name) + ", Greetings from Spring Boot!";
     }
-
 }

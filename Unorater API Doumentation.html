@@ -1,0 +1,909 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API JSON Doumentation</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h1 id="unorater-backend-api-documentation">UNORATER BACKEND API DOCUMENTATION</h1>
+<p>This document provides detailed information about various API requests and responses available to the Unorater application backend. The requests use <strong>Create Read Update Delete</strong> operations synonymous to the <strong>POST GET PUT DELETE</strong> HTTP commands along with requests data in <strong>JavaScript Object Notaion (JSON)</strong> to send and recieve data to and from the backend server.</p>
+<p>Since most JSON elements are nested (objects inside objects, arrays inside arrays, arrays inside objects e.t.c) , elements nested inside another element are either indented in the table - if the objects are used only once, or linked to a table for the object type- if the object is reused (the latter option was used in this documentation). Also, note that the element names are case sensitive, something to keep in mind when making the API calls. To understand the JSON syntax, read more <a href="https://www.tutorialspoint.com/json/json_syntax.htm">here</a>.</p>
+<p>The information about all endpoints and the HTTP methods they make use of are documented along with a table showing the details of the JSON format request/response body. The backend makes use of JSON Web Tokens(<a href="https://tools.ietf.org/html/rfc7519">JWT</a>) to authenticate users. The backend is engineered to categorize users of the system three into access levels: regular users, department administrators, and system administrators. Resources are restricted to users based on their “access level” or “roles”. All resources except the authentication resource requires a JWT along with the right role to access.</p>
+<p>The columns of the tables:</p>
+<p><strong>JSON RESPONSES</strong></p>
+<ol>
+<li><em>Element</em>: the key of the key/value pair</li>
+<li><em>Description</em>: a sentence fragment, usually a descriptive noun that describes the value</li>
+<li><em>Type</em>: number, string, boolean, array, or object</li>
+<li><em>Notes</em>: addtional information</li>
+</ol>
+<p><strong>JSON REQUESTS</strong><br>
+The request table is the same as response table but includes an additional column  called <em>Required</em> that indicates whether you need to include the element. The field will be filled with either “Required” if it must be included in the request, “Optional” if it can be ignored, and “Not Needed” if the field’s value is automatically generated hence should not be included at all.</p>
+<h1 id="api-requests">API REQUESTS</h1>
+<h2 id="auth-api">Authentication API</h2>
+<p><strong>Resource Name:</strong> Authentication<br>
+<strong>Resource Description:</strong> Provides API endpoints for login (includes regular users, system admins, and department admins) and signup for all users.<br>
+<strong>Resource Access:</strong> Open to all</p>
+<ol>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> User Sign-up<br>
+<em><strong>Endpoint Description:</strong></em> Signs up a user with REGULAR_USER role into the system.<br>
+<em><strong>Endpoint Request Method:</strong></em> POST<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/auth/signup</em><br>
+<em><strong>Endpoint Request Table:</strong></em></p>
+ <h3 id="signup-table">SIGN-UP REQUEST DATA OBJECT TABLE</h3>
+
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Description</th>
+<th>Type</th>
+<th>Required</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>userName</td>
+<td>Username  of the user attempting to sign-up</td>
+<td>String</td>
+<td>Required</td>
+<td></td>
+</tr>
+<tr>
+<td>email</td>
+<td>Email of the user attempting to sign-up</td>
+<td>String</td>
+<td>Required</td>
+<td></td>
+</tr>
+<tr>
+<td>password</td>
+<td>Password of the user attempting to sign-up</td>
+<td>String</td>
+<td>Required</td>
+<td></td>
+</tr>
+</tbody>
+</table><p><em><strong>Endpoint Request Sample  in JSON:</strong></em></p>
+<pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">{</span>
+  <span class="token string">"userName"</span><span class="token punctuation">:</span> <span class="token string">"John"</span><span class="token punctuation">,</span>
+  <span class="token string">"email"</span><span class="token punctuation">:</span> <span class="token string">"johndoe@gmail.com"</span><span class="token punctuation">,</span>
+  <span class="token string">"password"</span><span class="token punctuation">:</span> <span class="token string">"Doe1821731!@"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><em><strong>Endpoint Response Sample in JSON:</strong></em> <strong>200 OK</strong></p>
+<pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">{</span>
+  <span class="token string">"success"</span><span class="token punctuation">:</span>  <span class="token boolean">false</span><span class="token punctuation">,</span>
+  <span class="token string">"message"</span><span class="token punctuation">:</span>  <span class="token string">"Email Address already in use!"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+ <br>
+</li>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> Sign in<br>
+<em><strong>Endpoint Description:</strong></em> Signs a user with REGULAR_USER role into the system. This endpoint will return an access token in the response body that will be used to identify the user.<br>
+<em><strong>Endpoint Request Method:</strong></em> POST<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/auth/signin</em><br>
+<em><strong>Endpoint Request Body Table:</strong></em></p>
+ <h3 id="signin-table">LOGIN REQUEST DATA OBJECT TABLE</h3>
+
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Description</th>
+<th>Type</th>
+<th>Required</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>userNameOrEmail</td>
+<td>Username or Email of the user attempting to sign-in</td>
+<td>String</td>
+<td>Required</td>
+<td></td>
+</tr>
+<tr>
+<td>password</td>
+<td>Password of the user attempting to sign-in</td>
+<td>String</td>
+<td>Required</td>
+<td></td>
+</tr>
+</tbody>
+</table><p><em><strong>Endpoint Request Sample  in JSON:</strong></em></p>
+<pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">{</span>
+  <span class="token string">"userNameOrEmail"</span><span class="token punctuation">:</span> <span class="token string">"John"</span><span class="token punctuation">,</span>
+  <span class="token string">"password"</span><span class="token punctuation">:</span> <span class="token string">"Doe1821731!@"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><em><strong>Endpoint Response Sample in JSON:</strong></em> <strong>200 OK</strong></p>
+<pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">{</span>
+  <span class="token string">"accessToken"</span><span class="token punctuation">:</span> <span class="token string">"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNTkyNDcwNzE5LCJleHAiOjE1OTMwNzU1MTl9.6eYT244DB1313113WH8HXxR_opfxqnkddbVmkY-18-51h01RUOa-LbrRIJHZEesniU9q7tsID7VbpvhZmqBVDm-g"</span><span class="token punctuation">,</span>
+  <span class="token string">"tokenType"</span><span class="token punctuation">:</span>  <span class="token string">"Bearer"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+ <br>
+</li>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> System Administrator Sign-in<br>
+<em><strong>Endpoint Description:</strong></em> Signs a user with SYSTEM_ADMIN role into the system.<br>
+<em><strong>Endpoint Request Method:</strong></em> POST<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/auth/adminsignin</em><br>
+<em><strong>Endpoint Request Table:</strong></em><br>
+<a href="#signin-table">Login-In Request Data Object</a><br>
+<br></p>
+</li>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> Department Adminstrator Sign-in<br>
+<em><strong>Endpoint Description:</strong></em> Signs a user with DEPARTMENT_ADMIN role into the system. This endpoint will return an access token in the response body that will be used to identify the user.<br>
+<em><strong>Endpoint Request Method:</strong></em> POST<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/auth/departmentadminsignin</em><br>
+<em><strong>Endpoint Request Table:</strong></em><br>
+<a href="#signin-table">Login-In Request Data Object</a><br>
+<br><br>
+<br></p>
+</li>
+</ol>
+<h2 id="depadmin-api">Department Admin API</h2>
+<p><strong>Resource Name:</strong> Department Adminstrator<br>
+<strong>Resource Description:</strong> Provides API endpoints available to a Department Admin Users. A necessary precondition is that department admins have been assigned their respective department number before this resource is accessed. <br>
+<strong>Resource Access:</strong> ROLE_DEPARTMENT_ADMIN only</p>
+<ol>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> Add Service<br>
+<em><strong>Endpoint Description:</strong></em> Adds a Service to the deaprtment<br>
+<em><strong>Endpoint Request Method:</strong></em> POST<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/departmentadmin/addservice</em><br>
+<em><strong>Endpoint Body Request Table:</strong></em></p>
+ <h3 id="service-table">SERVICE DATA OBJECT TABLE</h3>
+
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Description</th>
+<th>Type</th>
+<th>Required</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>serviceID</td>
+<td>ID of the service</td>
+<td>String</td>
+<td>Not Required</td>
+<td></td>
+</tr>
+<tr>
+<td>serviceName</td>
+<td>Name of the service being added</td>
+<td>String</td>
+<td>Required</td>
+<td></td>
+</tr>
+<tr>
+<td>serviceDescription</td>
+<td>Summary of the Service</td>
+<td>String</td>
+<td>Required</td>
+<td></td>
+</tr>
+<tr>
+<td>reviews</td>
+<td>Reviews associated with the service</td>
+<td><a href="#review-table"> Review</a></td>
+<td>Not Needed</td>
+<td></td>
+</tr>
+<tr>
+<td>datedCreated</td>
+<td>Date the Service was created</td>
+<td>String</td>
+<td>Not Needed</td>
+<td></td>
+</tr>
+<tr>
+<td>publicService</td>
+<td>Indicates if the service is public facing or not</td>
+<td>boolean</td>
+<td>Required</td>
+<td></td>
+</tr>
+</tbody>
+</table><p><em><strong>Endpoint Request Sample  in JSON:</strong></em></p>
+<pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">{</span>
+  <span class="token string">"serviceName"</span>  <span class="token punctuation">:</span>  <span class="token string">"Dummy Service"</span><span class="token punctuation">,</span>
+  <span class="token string">"serviceDescription"</span>  <span class="token punctuation">:</span>  <span class="token string">"This is an API test"</span>
+  <span class="token string">"publicService"</span> <span class="token punctuation">:</span> <span class="token boolean">true</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><em><strong>Endpoint Response Sample in JSON:</strong></em> <strong>200 OK</strong></p>
+<pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">{</span>
+  <span class="token string">"success"</span><span class="token punctuation">:</span>  <span class="token boolean">true</span><span class="token punctuation">,</span>
+  <span class="token string">"message"</span><span class="token punctuation">:</span>  <span class="token string">"Service Added Successfully"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+ <br>
+</li>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> View Services<br>
+<em><strong>Endpoint Description:</strong></em> Returns a Department data object with a list of all it’s services<br>
+<em><strong>Endpoint Request Method:</strong></em> GET<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/departmentadmin/services</em><br>
+<em><strong>Endpoint Request Table:</strong></em></p>
+ <h3 id="department-table">DEPARTMENT DATA OBJECT TABLE</h3>
+
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Description</th>
+<th>Type</th>
+<th>Required</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>departmentID</td>
+<td>ID of the department</td>
+<td>String</td>
+<td>Not Needed</td>
+<td></td>
+</tr>
+<tr>
+<td>departmentName</td>
+<td>Name of the department</td>
+<td>String</td>
+<td>Required</td>
+<td></td>
+</tr>
+<tr>
+<td>services</td>
+<td>List of all services available in the department</td>
+<td><a href="#service-table">Service</a></td>
+<td>Not Needed</td>
+<td></td>
+</tr>
+</tbody>
+</table><p><em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A<br>
+<em><strong>Endpoint Response Sample in JSON:</strong></em></p>
+<pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">{</span>
+  <span class="token punctuation">{</span>
+	<span class="token string">"departmentID"</span><span class="token punctuation">:</span>  <span class="token number">1</span><span class="token punctuation">,</span>
+	<span class="token string">"departmentName"</span><span class="token punctuation">:</span>  <span class="token string">"Department of Computer Science and Cybersecurity (CSC)"</span><span class="token punctuation">,</span>
+	<span class="token string">"services"</span><span class="token punctuation">:</span>  <span class="token punctuation">[</span>
+		<span class="token punctuation">{</span>
+			<span class="token string">"serviceID"</span><span class="token punctuation">:</span>  <span class="token number">1</span><span class="token punctuation">,</span>
+			<span class="token string">"departmentID"</span><span class="token punctuation">:</span>  <span class="token number">1</span><span class="token punctuation">,</span>
+			<span class="token string">"serviceName"</span><span class="token punctuation">:</span>  <span class="token string">"ICS 499-02 Software Engineering and Capstone Project (SUMMER 2020)"</span><span class="token punctuation">,</span>
+			<span class="token string">"serviceDescription"</span><span class="token punctuation">:</span>  <span class="token string">"This course focuses on the theory and practice of effectively and efficiently building software systems that satisfy the requirements placed upon them by customers. This course gives an overview of the software lifecycle and introduces various process models used to develop software."</span><span class="token punctuation">,</span>
+			<span class="token string">"reviews"</span><span class="token punctuation">:</span>  <span class="token punctuation">[</span>
+				<span class="token punctuation">{</span>
+					<span class="token string">"reviewID"</span><span class="token punctuation">:</span>  <span class="token number">1</span><span class="token punctuation">,</span>
+					<span class="token string">"userID"</span><span class="token punctuation">:</span>  <span class="token number">1</span><span class="token punctuation">,</span>
+					<span class="token string">"serviceID"</span><span class="token punctuation">:</span>  <span class="token number">1</span><span class="token punctuation">,</span>
+					<span class="token string">"serviceName"</span><span class="token punctuation">:</span>  <span class="token string">"ICS 499-02 Software Engineering and Capstone Project (SUMMER 2020)"</span><span class="token punctuation">,</span>
+					<span class="token string">"reviewText"</span><span class="token punctuation">:</span>  <span class="token string">"This course was very informative and interesting. The professor, Prof. Ismail was very professional"</span><span class="token punctuation">,</span>
+					<span class="token string">"dateCreated"</span><span class="token punctuation">:</span>  <span class="token string">"2020-06-12T05:00:00.000+00:00"</span><span class="token punctuation">,</span>
+					<span class="token string">"dateModified"</span><span class="token punctuation">:</span>  <span class="token keyword">null</span><span class="token punctuation">,</span>
+				<span class="token punctuation">}</span>
+			<span class="token punctuation">]</span><span class="token punctuation">,</span>
+			<span class="token string">"dateCreated"</span><span class="token punctuation">:</span>  <span class="token string">"2020-06-12T05:00:00.000+00:00"</span>
+		<span class="token punctuation">}</span><span class="token punctuation">,</span>
+		<span class="token punctuation">{</span>
+			<span class="token string">"serviceID"</span><span class="token punctuation">:</span>  <span class="token number">8</span><span class="token punctuation">,</span>
+			<span class="token string">"departmentID"</span><span class="token punctuation">:</span>  <span class="token number">1</span><span class="token punctuation">,</span>
+			<span class="token string">"serviceName"</span><span class="token punctuation">:</span>  <span class="token string">"Dummy Service"</span><span class="token punctuation">,</span>
+			<span class="token string">"serviceDescription"</span><span class="token punctuation">:</span>  <span class="token string">"This is an API test"</span><span class="token punctuation">,</span>
+			<span class="token string">"reviews"</span><span class="token punctuation">:</span>  <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+			<span class="token string">"dateCreated"</span><span class="token punctuation">:</span>  <span class="token string">"2020-06-18T10:13:59.500+00:00"</span>
+		<span class="token punctuation">}</span>
+	<span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</li>
+</ol>
+<br>
+<ol start="3">
+<li>
+<p><em><strong>Endpoint Name:</strong></em> Update Service.<br>
+<em><strong>Endpoint Description:</strong></em> Updates the service name and description<br>
+<em><strong>Endpoint Request Method:</strong></em> PUT<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/departmentadmin/update</em><br>
+<em><strong>Endpoint Request Table:</strong></em> <a href="#service-table">Service Data Object</a> (<em>serviceID</em> required for call)</p>
+<p><em><strong>Endpoint Request  Body Sample  in JSON:</strong></em></p>
+<pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">{</span>
+  <span class="token string">"serviceID"</span>    <span class="token punctuation">:</span>  <span class="token number">8</span><span class="token punctuation">,</span>
+  <span class="token string">"serviceName"</span>  <span class="token punctuation">:</span>  <span class="token string">"Dummy Service Updated"</span><span class="token punctuation">,</span>
+  <span class="token string">"serviceDescription"</span> <span class="token punctuation">:</span> <span class="token string">"This is an API test Updated"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><em><strong>Endpoint Response Sample in JSON:</strong></em> <em><strong>200 OK</strong></em></p>
+<pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">{</span>
+  <span class="token string">"success"</span><span class="token punctuation">:</span>  <span class="token boolean">true</span><span class="token punctuation">,</span>
+  <span class="token string">"message"</span><span class="token punctuation">:</span>  <span class="token string">"Service 8 successfully updated"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+ <br>
+</li>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> Delete Service<br>
+<em><strong>Endpoint Description:</strong></em> Deletes a service and reviews associted with in from the system.<br>
+<em><strong>Endpoint Request Method:</strong></em> DELETE<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/departmentadmin/delete/{serviceID}</em><br>
+<em><strong>Endpoint Request Body Table:</strong></em> N/A<br>
+<em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A<br>
+<em><strong>Endpoint Response Sample in JSON:</strong></em> <strong>200 OK</strong></p>
+<pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">{</span>
+  <span class="token string">"success"</span><span class="token punctuation">:</span>  <span class="token boolean">true</span><span class="token punctuation">,</span>
+  <span class="token string">"message"</span><span class="token punctuation">:</span>  <span class="token string">"Service 8 successfully deleted"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<br>
+<br>
+</li>
+</ol>
+<h2 id="depadmin-api">Regular User API</h2>
+<p><strong>Resource Name:</strong> Regular User <br>
+<strong>Resource Description:</strong> Provides API endpoints available to a Regular User<br>
+<strong>Resource Access:</strong> ROLE_REGULAR_USER (Default role for all users)</p>
+<ol>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> User Summary<br>
+<em><strong>Endpoint Description:</strong></em> Gets the currently authenticated user summary<br>
+<em><strong>Endpoint Request Method:</strong></em> GET<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/user/me</em><br>
+<em><strong>Endpoint Request Body Table:</strong></em> N.A<br>
+<em><strong>Endpoint Response Body Table:</strong></em></p>
+ <h3 id="usersummary-table">USER SUMMARY DATA OBJECT TABLE</h3>
+
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Description</th>
+<th>Type</th>
+<th>Required</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>ID of the User</td>
+<td>String</td>
+<td>Not Required</td>
+<td></td>
+</tr>
+<tr>
+<td>userName</td>
+<td>Name of the user</td>
+<td>String</td>
+<td>Not Required</td>
+<td></td>
+</tr>
+<tr>
+<td>email</td>
+<td>Email of the user</td>
+<td>String</td>
+<td>Not Required</td>
+<td></td>
+</tr>
+</tbody>
+</table><p><em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A</p>
+<p><em><strong>Endpoint Response Sample in JSON:</strong></em> <strong>200 OK</strong></p>
+<pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">{</span>
+  <span class="token string">"id"</span><span class="token punctuation">:</span>  <span class="token number">1</span><span class="token punctuation">,</span>
+  <span class="token string">"userName"</span><span class="token punctuation">:</span>  <span class="token string">"John"</span><span class="token punctuation">,</span>
+  <span class="token string">"email"</span><span class="token punctuation">:</span>  <span class="token string">"john.doe@my.metrostate.edu"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+ <br>
+</li>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> View Public Services<br>
+<em><strong>Endpoint Description:</strong></em> Gets all the public facing services available for a user to review. The reviews attached to these services can be used to populate the reviews section of the frontend.<br>
+<em><strong>Endpoint Request Method:</strong></em> GET<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/user/viewpublicservices</em><br>
+<em><strong>Endpoint Request Body Table:</strong></em> N/A<br>
+<em><strong>Endpoint Response Body Table:</strong></em><br>
+<a href="#service-table">Service Data Object</a><br>
+<em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A<br>
+<em><strong>Endpoint Response Sample in JSON:</strong></em> <strong>200 OK</strong> <br>
+See <em>Service</em> Objects List  in JSON Response : 	<a href="#department-table">Department Data Object</a><br>
+<br></p>
+</li>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> View All Services<br>
+<em><strong>Endpoint Description:</strong></em> Gets all the services available for a user to review. The reviews attached to these services should not be used to populate the reviews section of the frontend, use the call above instead.<br>
+<em><strong>Endpoint Request Method:</strong></em> GET<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/user/viewallservices</em><br>
+<em><strong>Endpoint Request Body Table:</strong></em> N/A<br>
+<em><strong>Endpoint Response Body Table:</strong></em><br>
+<a href="#service-table">Service Data Object</a><br>
+<em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A<br>
+<em><strong>Endpoint Response Sample in JSON:</strong></em> <strong>200 OK</strong> <br>
+See <em>Service</em> Objects List  in JSON Response : 	<a href="#department-table">Department Data Object</a><br>
+<br></p>
+</li>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> Check Username Availablilty<br>
+<em><strong>Endpoint Description:</strong></em> Returns true if a username is avaliable.<br>
+<em><strong>Endpoint Request Method:</strong></em> GET<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/user/checkUsernameAvailability?username={name}</em><br>
+<em><strong>Endpoint Request Body Table:</strong></em> N/A<br>
+<em><strong>Endpoint Response Body Table:</strong></em></p>
+ <h3 id="useridava-table">UserIdentityAvailability Data Object Table </h3>
+
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Description</th>
+<th>Type</th>
+<th>Required</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>available</td>
+<td>Indicates if the given username/email is available or not</td>
+<td>boolean</td>
+<td>Not Required</td>
+<td></td>
+</tr>
+</tbody>
+</table><p><em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A<br>
+<em><strong>Endpoint Response Sample in JSON:</strong></em> <strong>200 OK</strong></p>
+<pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">{</span>
+  <span class="token string">"availabe"</span><span class="token punctuation">:</span> <span class="token boolean">true</span>
+<span class="token punctuation">}</span>
+</code></pre>
+ <br>
+</li>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> Check Email Availablilty<br>
+<em><strong>Endpoint Description:</strong></em> Returns true if an email is avaliable.<br>
+<em><strong>Endpoint Request Method:</strong></em> GET<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/user/checkEmailAvailability?email={email_address}</em><br>
+<em><strong>Endpoint Request Body Table:</strong></em> N/A<br>
+<em><strong>Endpoint Response Body Table:</strong></em><br>
+<a href="#useridava-table">UserIdentity Data Object</a><br>
+<br></p>
+</li>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> Get User Profile<br>
+<em><strong>Endpoint Description:</strong></em> Returns the currently authenticated user’s profile which includes the user id, username, number user reviews, and approved reviews .<br>
+<em><strong>Endpoint Request Method:</strong></em> GET<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/user/me/profile</em><br>
+<em><strong>Endpoint Request Body Table:</strong></em> N/A<br>
+<em><strong>Endpoint Response Body Table:</strong></em></p>
+ <h3 id="usersummary-table">USER PROFILE DATA OBJECT TABLE</h3>
+
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Description</th>
+<th>Type</th>
+<th>Required</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>ID of the User</td>
+<td>String</td>
+<td>Not Required</td>
+<td></td>
+</tr>
+<tr>
+<td>userName</td>
+<td>Name of the user</td>
+<td>String</td>
+<td>Not Required</td>
+<td></td>
+</tr>
+<tr>
+<td>numOfReviews</td>
+<td>Number of reviews</td>
+<td>String</td>
+<td>Not Required</td>
+<td></td>
+</tr>
+<tr>
+<td>allApprovedReviews</td>
+<td>List of approved reviews</td>
+<td><a href="#review-table"> Review</a></td>
+<td>Not Required</td>
+<td></td>
+</tr>
+</tbody>
+</table><p><em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A<br>
+<em><strong>Endpoint Response Sample in JSON:</strong></em> <strong>200 OK</strong></p>
+<pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">{</span>
+    <span class="token string">"id"</span><span class="token punctuation">:</span>  <span class="token number">1</span><span class="token punctuation">,</span>
+	<span class="token string">"numOfReviews"</span><span class="token punctuation">:</span>  <span class="token number">1</span><span class="token punctuation">,</span>
+	<span class="token string">"allApprovedReviews"</span><span class="token punctuation">:</span>  <span class="token punctuation">[</span>
+		<span class="token punctuation">{</span>
+			<span class="token string">"reviewID"</span><span class="token punctuation">:</span>  <span class="token number">1</span><span class="token punctuation">,</span>
+			<span class="token string">"userID"</span><span class="token punctuation">:</span>  <span class="token number">1</span><span class="token punctuation">,</span>
+			<span class="token string">"serviceID"</span><span class="token punctuation">:</span>  <span class="token number">1</span><span class="token punctuation">,</span>
+			<span class="token string">"serviceName"</span><span class="token punctuation">:</span>  <span class="token string">"ICS 499-02 Software Engineering and Capstone Project (SUMMER 2020)"</span><span class="token punctuation">,</span>
+			<span class="token string">"reviewText"</span><span class="token punctuation">:</span>  <span class="token string">"This course was very informative and interesting. The professor, Prof. Ismail was very professional"</span><span class="token punctuation">,</span>
+			<span class="token string">"dateCreated"</span><span class="token punctuation">:</span>  <span class="token string">"2020-06-12T05:00:00.000+00:00"</span><span class="token punctuation">,</span>
+			<span class="token string">"dateModified"</span><span class="token punctuation">:</span>  <span class="token keyword">null</span><span class="token punctuation">,</span>
+		<span class="token punctuation">}</span>
+	<span class="token punctuation">]</span><span class="token punctuation">,</span>
+	<span class="token string">"username"</span><span class="token punctuation">:</span>  <span class="token string">"John"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</li>
+</ol>
+<br>
+<ol start="7">
+<li>
+<p><em><strong>Endpoint Name:</strong></em> Post Review<br>
+<em><strong>Endpoint Description:</strong></em> Posts a currently authenticated user’s review.<br>
+<em><strong>Endpoint Request Method:</strong></em> POST<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/user/me/postreview</em><br>
+<em><strong>Endpoint Request Body Table:</strong></em></p>
+ <h3 id="review-table">Review Data Object Table</h3>
+
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Description</th>
+<th>Type</th>
+<th>Required</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>reviewID</td>
+<td>ID of the Review</td>
+<td>String</td>
+<td>Not Needed</td>
+<td></td>
+</tr>
+<tr>
+<td>userID</td>
+<td>ID of user posting review</td>
+<td>String</td>
+<td>Not Required</td>
+<td></td>
+</tr>
+<tr>
+<td>serviceID</td>
+<td>ID of service being reviewed</td>
+<td>String</td>
+<td>Required</td>
+<td></td>
+</tr>
+<tr>
+<td>serviceName</td>
+<td>Name of service being reviewed</td>
+<td>String</td>
+<td>Not Required</td>
+<td></td>
+</tr>
+<tr>
+<td>reviewText</td>
+<td>The review text</td>
+<td>String</td>
+<td>Required</td>
+<td></td>
+</tr>
+<tr>
+<td>dateCreated</td>
+<td>Date the review was created</td>
+<td>Date</td>
+<td>Not Required</td>
+<td></td>
+</tr>
+<tr>
+<td>dateModified</td>
+<td>Date the review was modified</td>
+<td>Date</td>
+<td>Not Required</td>
+<td></td>
+</tr>
+</tbody>
+</table><p><em><strong>Endpoint Response Body Table:</strong></em> N/A</p>
+<p><em><strong>Endpoint Request  Body Sample  in JSON:</strong></em></p>
+<pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">{</span>
+  <span class="token string">"serviceID"</span><span class="token punctuation">:</span>  <span class="token number">2</span><span class="token punctuation">,</span>
+  <span class="token string">"reviewText"</span><span class="token punctuation">:</span><span class="token string">"I really understood the course content"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><em><strong>Endpoint Response Sample:</strong></em> <strong>200 OK</strong><br>
+<code>Review Created : Thu Jun 18 12: 30: 07 CDT 2020</code><br>
+<br></p>
+</li>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> Update Review<br>
+<em><strong>Endpoint Description:</strong></em> Updates a currently authenticated user’s review.<br>
+<em><strong>Endpoint Request Method:</strong></em> PUT<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/user/me/updatereview</em><br>
+<em><strong>Endpoint Request Body Table:</strong></em><br>
+<a href="#review-table"> Review Data Object </a>(Required: <em>reviewID, reviewText</em>)<br>
+<em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> See Review Data Object Sample<br>
+<em><strong>Endpoint Response Sample:</strong></em> <strong>200 OK</strong><br>
+<code>Review Modified: Thu Jun 18 12: 30: 07 CDT 2020</code><br>
+<br></p>
+</li>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> Delete Review<br>
+<em><strong>Endpoint Description:</strong></em> Deletes a currently authenticated user’s review.<br>
+<em><strong>Endpoint Request Method:</strong></em> DELETE<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/user/me/deletereview/{reviewID}</em><br>
+<em><strong>Endpoint Request Body Table:</strong></em> N/A <br>
+<em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A <br>
+<em><strong>Endpoint Response Sample:</strong></em> <strong>200 OK</strong><br>
+<br><br>
+<br></p>
+</li>
+</ol>
+<h2 id="depadmin-api">System Admin API</h2>
+<p><strong>Resource Name:</strong> System Administrator<br>
+<strong>Resource Description:</strong> Provides API endpoints available to a System Admin User<br>
+<strong>Resource Access:</strong> ROLE_SYSTEM_ADMIN</p>
+<ol>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> Grant Admin Role  <br>
+<em><strong>Endpoint Description:</strong></em> Grants system administrator role to a specified user <br>
+<em><strong>Endpoint Request Method:</strong></em> POST <br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/grantsysadminrole/{userID}</em>  <br>
+<em><strong>Endpoint Request Body Table:</strong></em> N/A  <br>
+<em><strong>Endpoint Response Body Table:</strong></em> N/A <br>
+<em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A <br>
+<em><strong>Endpoint Response Sample:</strong></em> <strong>200 OK</strong></p>
+<pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">{</span>
+  <span class="token string">"success"</span><span class="token punctuation">:</span>  <span class="token boolean">true</span><span class="token punctuation">,</span>
+  <span class="token string">"reviewText"</span><span class="token punctuation">:</span><span class="token string">"Role ROLE_SYSTEM_ADMIN Successfully Assigned to User John"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+ <br>
+</li>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> Revoke Admin Role  <br>
+<em><strong>Endpoint Description:</strong></em> Removes system administrator role from specified user <br>
+<em><strong>Endpoint Request Method:</strong></em> POST <br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/removesysadminrole/{userID}</em>  <br>
+<em><strong>Endpoint Request Body Table:</strong></em> N/A  <br>
+<em><strong>Endpoint Response Body Table:</strong></em> N/A <br>
+<em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A <br>
+<em><strong>Endpoint Response Sample:</strong></em> <strong>200 OK</strong></p>
+<pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">{</span>
+  <span class="token string">"success"</span><span class="token punctuation">:</span>  <span class="token boolean">true</span><span class="token punctuation">,</span>
+  <span class="token string">"reviewText"</span><span class="token punctuation">:</span><span class="token string">"Role ROLE_SYSTEM_ADMIN Successfully Removed from User John"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+ <br>
+</li>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> Grant Department Admin Role  <br>
+<em><strong>Endpoint Description:</strong></em> Grants department administrator role to specified user <br>
+<em><strong>Endpoint Request Method:</strong></em> POST <br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/grantdepadminrole/{userID}/{departmentID}</em>  <br>
+<em><strong>Endpoint Request Body Table:</strong></em> N/A  <br>
+<em><strong>Endpoint Response Body Table:</strong></em> N/A <br>
+<em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A <br>
+<em><strong>Endpoint Response Sample:</strong></em> <strong>200 OK</strong></p>
+<pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">{</span>
+  <span class="token string">"success"</span><span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+  <span class="token string">"reviewText"</span><span class="token punctuation">:</span> <span class="token string">"Role ROLE_DEPARTMENT_ADMIN Successfully Assigned to User John"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+ <br>
+</li>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> Remove Department Admin Role  <br>
+<em><strong>Endpoint Description:</strong></em> Removes department administrator role from specified user <br>
+<em><strong>Endpoint Request Method:</strong></em> POST <br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/removedepadminrole/{userID}</em>  <br>
+<em><strong>Endpoint Request Body Table:</strong></em> N/A  <br>
+<em><strong>Endpoint Response Body Table:</strong></em> N/A<br>
+<em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A<br>
+<em><strong>Endpoint Response Sample:</strong></em> <strong>200 OK</strong></p>
+<pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">{</span>
+  <span class="token string">"success"</span><span class="token punctuation">:</span>  <span class="token boolean">true</span><span class="token punctuation">,</span>
+  <span class="token string">"reviewText"</span><span class="token punctuation">:</span><span class="token string">"Role ROLE_DEPARTMENT_ADMIN Successfully Removed from User John"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+ <br>
+</li>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> Get Departments  <br>
+<em><strong>Endpoint Description:</strong></em> Retrieves a list of all departments <br>
+<em><strong>Endpoint Request Method:</strong></em> GET<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/systemadmin/departments</em> <br>
+<em><strong>Endpoint Request Body Table:</strong></em> N/A <br>
+<em><strong>Endpoint Response Body Table:</strong></em> 	N/A <br>
+<em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A <br>
+<em><strong>Endpoint Response Sample:</strong></em> <strong>200 OK</strong><br>
+<a href="#department-table">Department Data Object</a><br>
+<br></p>
+</li>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> Create Department  <br>
+<em><strong>Endpoint Description:</strong></em> Adds a department to the system <br>
+<em><strong>Endpoint Request Method:</strong></em> POST <br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/systemadmin/createdepartment</em>  <br>
+<em><strong>Endpoint Request Body Table:</strong></em> <a href="#department-table">Department Data Object</a><br>
+<em><strong>Endpoint Response Body Table:</strong></em> N/A<br>
+<em><strong>Endpoint Request  Body Sample  in JSON:</strong></em></p>
+<pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">{</span>
+  <span class="token string">"departmentID"</span><span class="token punctuation">:</span>  <span class="token number">1</span><span class="token punctuation">,</span>
+  <span class="token string">"departmentName"</span><span class="token punctuation">:</span> <span class="token string">"Department of Social Sciences"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><em><strong>Endpoint Response Sample:</strong></em> <strong>200 CREATED</strong></p>
+<pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">{</span>
+  <span class="token string">"success"</span><span class="token punctuation">:</span>  <span class="token boolean">true</span><span class="token punctuation">,</span>
+  <span class="token string">"reviewText"</span><span class="token punctuation">:</span> <span class="token string">"Department Added Successfully"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+ <br>
+</li>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> Delete Department  <br>
+<em><strong>Endpoint Description:</strong></em> Deletes a department along with services and reviews associated with it from the system<br>
+<em><strong>Endpoint Request Method:</strong></em> DELETE<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/systemadmin/delete/{departmentID}</em>  <br>
+<em><strong>Endpoint Request Body Table:</strong></em> N/A <br>
+<em><strong>Endpoint Response Body Table:</strong></em> N/A<br>
+<em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A<br>
+<em><strong>Endpoint Response Sample:</strong></em> <strong>200 OK</strong><br>
+<br></p>
+</li>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> Update Department  <br>
+<em><strong>Endpoint Description:</strong></em> Updates a department’s name <br>
+<em><strong>Endpoint Request Method:</strong></em> PUT<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/systemadmin/department/rename/{departmentID}</em> <br>
+<em><strong>Endpoint Request Body Table:</strong></em> N/A <br>
+<em><strong>Endpoint Response Body Table:</strong></em> N/A<br>
+<em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A<br>
+<em><strong>Endpoint Response Sample:</strong></em> <strong>200 OK</strong><br>
+<br></p>
+</li>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> Get users<br>
+<em><strong>Endpoint Description:</strong></em> Retrieves a list of all the users<br>
+<em><strong>Endpoint Request Method:</strong></em> GET<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/systemadmin/users</em>  <br>
+<em><strong>Endpoint Request Body Table:</strong></em></p>
+<h3 id="usersummary-table">USER DATA OBJECT	TABLE</h3>
+
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Description</th>
+<th>Type</th>
+<th>Required</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>userID</td>
+<td>ID of the User</td>
+<td>String</td>
+<td>Not Required</td>
+<td></td>
+</tr>
+<tr>
+<td>userName</td>
+<td>Account name of the user</td>
+<td>String</td>
+<td>Required</td>
+<td></td>
+</tr>
+<tr>
+<td>email</td>
+<td>Email of the user</td>
+<td>String</td>
+<td>Required</td>
+<td></td>
+</tr>
+<tr>
+<td>password</td>
+<td>Password of the user</td>
+<td>String</td>
+<td>Required</td>
+<td></td>
+</tr>
+<tr>
+<td>reviews</td>
+<td>List of all reviews</td>
+<td><a href="#review-table"> Review</a></td>
+<td>Not Required</td>
+<td></td>
+</tr>
+</tbody>
+</table><p><em><strong>Endpoint Response Body Table:</strong></em> N/A<br>
+<em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A<br>
+<em><strong>Endpoint Response Sample:</strong></em> <strong>200 OK</strong></p>
+<pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">[</span>
+	<span class="token punctuation">{</span>
+		<span class="token string">"userID"</span><span class="token punctuation">:</span>  <span class="token number">4</span><span class="token punctuation">,</span>
+		<span class="token string">"userName"</span><span class="token punctuation">:</span>  <span class="token string">"John"</span><span class="token punctuation">,</span>
+		<span class="token string">"email"</span><span class="token punctuation">:</span>  <span class="token string">"john.doe@yahoo.com"</span><span class="token punctuation">,</span>
+		<span class="token string">"reviews"</span><span class="token punctuation">:</span>  <span class="token punctuation">[</span>
+			<span class="token punctuation">{</span>
+				<span class="token string">"reviewID"</span><span class="token punctuation">:</span>  <span class="token number">6</span><span class="token punctuation">,</span>
+				<span class="token string">"userID"</span><span class="token punctuation">:</span>  <span class="token number">4</span><span class="token punctuation">,</span>
+				<span class="token string">"serviceID"</span><span class="token punctuation">:</span>  <span class="token number">2</span><span class="token punctuation">,</span>
+				<span class="token string">"serviceName"</span><span class="token punctuation">:</span>  <span class="token string">"Linear Algebra and Applications(SUMMER 2020)"</span><span class="token punctuation">,</span>
+				<span class="token string">"reviewText"</span><span class="token punctuation">:</span>  <span class="token string">"This course was challenging but interesting"</span><span class="token punctuation">,</span>
+				<span class="token string">"dateCreated"</span><span class="token punctuation">:</span>  <span class="token string">"2020-06-17T18:25:21.570+00:00"</span><span class="token punctuation">,</span>
+				<span class="token string">"dateModified"</span><span class="token punctuation">:</span>  <span class="token keyword">null</span><span class="token punctuation">,</span>
+			<span class="token punctuation">}</span><span class="token punctuation">,</span>
+			<span class="token punctuation">{</span>
+				<span class="token string">"reviewID"</span><span class="token punctuation">:</span>  <span class="token number">9</span><span class="token punctuation">,</span>
+				<span class="token string">"userID"</span><span class="token punctuation">:</span>  <span class="token number">4</span><span class="token punctuation">,</span>
+				<span class="token string">"serviceID"</span><span class="token punctuation">:</span>  <span class="token number">2</span><span class="token punctuation">,</span>
+				<span class="token string">"serviceName"</span><span class="token punctuation">:</span>  <span class="token string">"Linear Algebra and Applications(SUMMER 2020)"</span><span class="token punctuation">,</span>
+				<span class="token string">"reviewText"</span><span class="token punctuation">:</span>  <span class="token string">"The course was challenging but interesting"</span><span class="token punctuation">,</span>
+				<span class="token string">"dateCreated"</span><span class="token punctuation">:</span>  <span class="token string">"2020-06-19T02:19:35.800+00:00"</span><span class="token punctuation">,</span>
+				<span class="token string">"dateModified"</span><span class="token punctuation">:</span>  <span class="token keyword">null</span><span class="token punctuation">,</span>
+			<span class="token punctuation">}</span>
+		<span class="token punctuation">]</span><span class="token punctuation">,</span>
+			<span class="token string">"roles"</span><span class="token punctuation">:</span>  <span class="token punctuation">[</span>
+				<span class="token punctuation">{</span>
+					<span class="token string">"id"</span><span class="token punctuation">:</span>  <span class="token number">2</span><span class="token punctuation">,</span>
+					<span class="token string">"name"</span><span class="token punctuation">:</span>  <span class="token string">"ROLE_REGULAR_USER"</span>
+				<span class="token punctuation">}</span>
+			<span class="token punctuation">]</span><span class="token punctuation">,</span>
+		<span class="token string">"dateCreated"</span><span class="token punctuation">:</span>  <span class="token string">"2020-06-16T21:47:51.520+00:00"</span><span class="token punctuation">,</span>
+		<span class="token string">"departmentNum"</span><span class="token punctuation">:</span>  <span class="token number">0</span>
+	<span class="token punctuation">}</span>
+<span class="token punctuation">]</span>
+</code></pre>
+</li>
+</ol>
+<br>
+<ol start="10">
+<li>
+<p><em><strong>Endpoint Name:</strong></em> Delete User<br>
+<em><strong>Endpoint Description:</strong></em> Deletes a user from the system <br>
+<em><strong>Endpoint Request Method:</strong></em> DELETE<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/systemadmin/user/delete/{userID}</em>  <br>
+<em><strong>Endpoint Request Body Table:</strong></em> N/A <br>
+<em><strong>Endpoint Response Body Table:</strong></em> N/A<br>
+<em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A<br>
+<em><strong>Endpoint Response Sample:</strong></em> <strong>200 OK</strong><br>
+<br></p>
+</li>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> Delete Review<br>
+<em><strong>Endpoint Description:</strong></em> Deletes a review from the system <br>
+<em><strong>Endpoint Request Method:</strong></em> DELETE<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/systemadmin/reviews/delete/{reviewID}</em>  <br>
+<em><strong>Endpoint Request Body Table:</strong></em> N/A <br>
+<em><strong>Endpoint Response Body Table:</strong></em> N/A<br>
+<em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A<br>
+<em><strong>Endpoint Response Sample:</strong></em> <strong>200 OK</strong></p>
+</li>
+</ol>
+</div>
+</body>
+
+</html>

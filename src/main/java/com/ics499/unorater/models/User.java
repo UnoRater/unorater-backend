@@ -1,16 +1,26 @@
 package com.ics499.unorater.models;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.NaturalId;
+
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Model for the Users entity.
  *
- * @author UNO TEAM
+ * @author UNO-TEAM
  */
 @Entity
-@Table(name="USERS", uniqueConstraints = @UniqueConstraint(columnNames = "EMAIL")
+
+@Table(name="USERS", catalog="UNODATABASE", schema="DBO", uniqueConstraints = @UniqueConstraint(columnNames = "EMAIL")
 )
 public class User {
 
@@ -19,29 +29,42 @@ public class User {
     @Column(name="USERID", columnDefinition = "BIGINT")
     private int userID;
 
+    @NotBlank
+    @Size(max = 40)
     @Column(name="USERNAME")
     private String userName;
 
+    @NaturalId
+    @NotBlank
+    @Size(max = 40)
+    @Email
     @Column(name="EMAIL")
     private String email;
 
+    @JsonIgnore
+    @NotBlank
+    @Size(max = 100)
     @Column(name="PASSWORD")
     private String password;
-
-    @Column(name="ISADMIN", columnDefinition = "BIT")
-    private boolean isAdmin;
 
     @OneToMany(mappedBy="user")
     private List<Review> reviews;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
-            name = "USERROLES",
+            name = "USERSROLES",
             joinColumns = @JoinColumn(
                     name = "USERID", referencedColumnName = "USERID"),
             inverseJoinColumns = @JoinColumn(
                     name = "ROLEID", referencedColumnName = "ROLEID"))
     private Collection<Role> roles;
+
+    @Column(name = "DATECREATED")
+    private Date dateCreated;
+
+
+    @Column(name = "DEPARTMENTNO")
+    private int departmentNum;
 
     public User() {}
 
@@ -82,13 +105,6 @@ public class User {
         this.email = email;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
-    }
-
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
-    }
 
     public List<Review> getReviews() {
         return reviews;
@@ -112,6 +128,22 @@ public class User {
 
     public void setRoles(Collection<Role> roles) {
         this.roles = roles;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public int getDepartmentNum() {
+        return departmentNum;
+    }
+
+    public void setDepartmentNum(int departmentNum) {
+        this.departmentNum = departmentNum;
     }
 
     @Override
