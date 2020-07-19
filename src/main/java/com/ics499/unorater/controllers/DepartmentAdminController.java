@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Defines the RESTFul API endpoints available to a Department Admin User.
@@ -72,5 +73,15 @@ public class DepartmentAdminController {
     public ResponseEntity<?> deleteService (@PathVariable Integer serviceID) {
         serviceRepository.deleteById(serviceID);
         return ResponseEntity.ok(new ApiResponse(true, "Service " + serviceID + " successfully deleted"));
+    }
+
+    /**
+     * Searches for services that match the name specified
+     * @param serviceName
+     * @return Service Object
+     */
+    @GetMapping("/departmentadmin/search/{serviceName}")
+    public List<Service> searchServices (@PathVariable String serviceName) {
+        return serviceRepository.searchServices(serviceName);
     }
 }
