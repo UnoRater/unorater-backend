@@ -4,6 +4,7 @@ import com.ics499.unorater.models.Review;
 import com.ics499.unorater.models.Service;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -22,4 +23,7 @@ public interface ServiceRepository extends JpaRepository <Service, Integer> {
      */
     @Query("select s from Service s where s.publicService = true")
     List<Service> findPublicServices();
+
+    @Query("select s from Service s where s.serviceName like %:serviceName")
+    List <Service> searchServices(@Param("serviceName") String serviceName);
 }
