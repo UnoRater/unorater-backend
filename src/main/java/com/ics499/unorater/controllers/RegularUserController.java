@@ -96,6 +96,7 @@ public class RegularUserController {
         return new UserIdentityAvailability(isAvailable);
     }
 
+
     /**
      * Gets the full user profile which total number of reviews,
      * approved reviews.
@@ -127,7 +128,7 @@ public class RegularUserController {
         List<String> badWordsFound = BadWordFilter.badWordsFound(review.getReviewText());
 
         if (badWordsFound.size() > 0) {
-            return ResponseEntity.ok(new ApiResponse(true, "Bad words found: " + badWordsFound.toString() + ". Please modify your review"));
+            return ResponseEntity.ok(new ApiResponse(false, "Bad words found: " + badWordsFound.toString() + ". Please modify your review"));
         }
 
         review.setDateCreated(new Date());
@@ -167,5 +168,15 @@ public class RegularUserController {
     @DeleteMapping("user/me/deletereview/{reviewID}")
     public void deleteReview (@PathVariable Integer reviewID) {
         reviewRepository.deleteById(reviewID);
+    }
+
+    /**
+     * Searches for services that match the name specified
+     * @param serviceName
+     * @return
+     */
+    @GetMapping("/regularuser/search/{serviceName}")
+    public List<Service> searchServices (@PathVariable String serviceName) {
+        return serviceRepository.searchServices(serviceName);
     }
 }
