@@ -192,4 +192,14 @@ public class SystemAdminController {
     public void deleteReview (@PathVariable Integer reviewID) {
         reviewRepository.deleteById(reviewID);
     }
+
+    /**
+     * Searches for users that match the name specified
+     * @param userName
+     * @return
+     */
+    @GetMapping ("/systemadmin/users/search/{userName}")
+    public List <User> searchUser (@PathVariable String userName) {
+       return userRepository.searchUsers(userName);
+    }
 }
