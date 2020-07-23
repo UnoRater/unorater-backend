@@ -28,6 +28,6 @@ public interface UserRepository extends JpaRepository <User, Integer> {
 
     Boolean existsByEmail(String email);
 
-    @Query("select u from User u where u.userName like %:userName")
+    @Query(value="select * from Users u where u.userName like :userName%", nativeQuery = true)
     List<User> searchUsers (@Param("userName") String userName);
 }

@@ -44,6 +44,9 @@ public class Review {
     @Column(name="REVIEWTEXT")
     private String reviewText;
 
+    @Column(name="SCORE")
+    private String score;
+
     @Column(name="DATECREATED")
     private Date dateCreated;
 
@@ -130,5 +133,13 @@ public class Review {
                 ", serviceID='" + serviceID + '\'' +
                 ", reviewText='" + reviewText + '\'' +
                 '}';
+    }
+
+    public String getScore() {
+        return score;
+    }
+
+    public void setScore(String score) {
+        this.score = score;
     }
 }

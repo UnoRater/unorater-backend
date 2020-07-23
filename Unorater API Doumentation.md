@@ -42,7 +42,7 @@ The request table is the same as response table but includes an additional colum
 	```json
 	{
 	  "userName": "John",
-	  "email": "johndoe@gmail.com"
+	  "email": "johndoe@gmail.com",
 	  "password": "Doe1821731!@"
 	}
 	```
@@ -60,7 +60,8 @@ The request table is the same as response table but includes an additional colum
 	***Endpoint Full URL Path:*** *localhost:8080/api/auth/signin*\
 	***Endpoint Request Body Table:***
 
-    <h3 id="signin-table">LOGIN REQUEST DATA OBJECT TABLE</h3>
+
+	<h3 id="signin-table">LOGIN REQUEST DATA OBJECT TABLE</h3>
 
 	| Element|Description|Type|Required|Notes|
 	|-----------|-------------|------|---------|--------|
@@ -113,7 +114,7 @@ The request table is the same as response table but includes an additional colum
 	
 	| Element|Description|Type|Required|Notes|
 	|-----------|-------------|------|---------|--------|
-	| serivceID| ID of the service |String|Not Required|
+	| serviceID| ID of the service |String|Not Required|
 	| serviceName| Name of the service being added|String|Required|
 	| serviceDescription| Summary of the Service|String|Required|
 	| reviews| Reviews associated with the service|<a href="#review-table"> Review</a>|Not Needed|
@@ -124,7 +125,7 @@ The request table is the same as response table but includes an additional colum
 	```json
 	{
 	  "serviceName"  :  "Dummy Service",
-	  "serviceDescription"  :  "This is an API test"
+	  "serviceDescription"  :  "This is an API test",
 	  "publicService" : true
 	}
 	```
@@ -224,6 +225,14 @@ The request table is the same as response table but includes an additional colum
 	  "message":  "Service 8 successfully deleted"
 	}
 	```
+5. ***Endpoint Name:*** Search Services\
+	***Endpoint Description:*** Searches for services that match the name specified.\
+	  ***Endpoint Request Method:*** GET\
+	***Endpoint Full URL Path:*** *localhost:8080/api/departmentadmin/search/{serviceName}*\
+    ***Endpoint Request Body Table:*** N/A \
+***Endpoint Request  Body Sample  in JSON:*** N/A \
+***Endpoint Response Sample:*** **200 OK**
+ A List of <a href="#service-table">Service Data Object</a>
 	<br>
 	<br>
 <h2 id="depadmin-api">Regular User API</h2>
@@ -246,7 +255,9 @@ The request table is the same as response table but includes an additional colum
 	| userName| Name of the user|String|Not Required|
 	| email| Email of the user|String|Not Required|
 
+	
 	***Endpoint Request  Body Sample  in JSON:*** N/A
+	
 	
 	***Endpoint Response Sample in JSON:*** **200 OK**
 	```json
@@ -265,7 +276,7 @@ The request table is the same as response table but includes an additional colum
 	***Endpoint Full URL Path:*** *localhost:8080/api/user/viewpublicservices*\
 	***Endpoint Request Body Table:*** N/A
 	***Endpoint Response Body Table:*** 
-	<a href="#service-table">Serivce Data Object</a>
+	<a href="#service-table">Service Data Object</a>
 	***Endpoint Request  Body Sample  in JSON:*** N/A\
 	***Endpoint Response Sample in JSON:*** **200 OK** \
 		See *Service* Objects List  in JSON Response : 	<a href="#department-table">Department Data Object</a>
@@ -277,7 +288,7 @@ The request table is the same as response table but includes an additional colum
 	***Endpoint Full URL Path:*** *localhost:8080/api/user/viewallservices*\
 	***Endpoint Request Body Table:*** N/A
 	***Endpoint Response Body Table:*** 
-	<a href="#service-table">Serivce Data Object</a>
+	<a href="#service-table">Service Data Object</a>
 	***Endpoint Request  Body Sample  in JSON:*** N/A\
 	***Endpoint Response Sample in JSON:*** **200 OK** \
 		See *Service* Objects List  in JSON Response : 	<a href="#department-table">Department Data Object</a>
@@ -342,6 +353,7 @@ The request table is the same as response table but includes an additional colum
 				"reviewText":  "This course was very informative and interesting. The professor, Prof. Ismail was very professional",
 				"dateCreated":  "2020-06-12T05:00:00.000+00:00",
 				"dateModified":  null,
+				"score": "5"
 			}
 		],
 		"username":  "John"
@@ -364,14 +376,18 @@ The request table is the same as response table but includes an additional colum
 	| reviewText| The review text|String|Required|
 	| dateCreated| Date the review was created |Date|Not Required|
 	| dateModified| Date the review was modified|Date|Not Required|
+	| score| Rating score|String|Required|
+
 	
- 	***Endpoint Response Body Table:*** N/A
+    
+	***Endpoint Response Body Table:*** N/A
 
 	***Endpoint Request  Body Sample  in JSON:*** 
 	```json
 	{
 	  "serviceID":  2,
-	  "reviewText":"I really understood the course content"
+	  "reviewText":"I really understood the course content",
+	  "score": "4.5"
 	}
 	```
 	***Endpoint Response Sample:*** **200 OK**
@@ -396,9 +412,18 @@ The request table is the same as response table but includes an additional colum
     ***Endpoint Request Body Table:*** N/A \
 ***Endpoint Request  Body Sample  in JSON:*** N/A \
 ***Endpoint Response Sample:*** **200 OK**
-<br>
-<br>
 
+10. ***Endpoint Name:*** Search Services\
+	***Endpoint Description:*** Searches for services that match the name specified.\
+	  ***Endpoint Request Method:*** GET\
+	***Endpoint Full URL Path:*** *localhost:8080/api/regularuser/search/{serviceName}*\
+    ***Endpoint Request Body Table:*** N/A \
+***Endpoint Request  Body Sample  in JSON:*** N/A \
+***Endpoint Response Sample:*** **200 OK**
+ A List of <a href="#service-table">Service Data Object</a>
+
+<br>
+<br>
 <h2 id="depadmin-api">System Admin API</h2>
 
 **Resource Name:** System Administrator\
@@ -514,6 +539,11 @@ The request table is the same as response table but includes an additional colum
 ***Endpoint Response Body Table:*** N/A\
 	***Endpoint Request  Body Sample  in JSON:*** N/A\
 ***Endpoint Response Sample:*** **200 OK**
+	```json
+	{
+	  "departmentName": "Department of Social Justices(formely Sciences)"
+	}
+	```
 	<br>
 9.  ***Endpoint Name:*** Get users\
 	***Endpoint Description:*** Retrieves a list of all the users\
@@ -521,7 +551,7 @@ The request table is the same as response table but includes an additional colum
 	***Endpoint Full URL Path:*** *localhost:8080/api/systemadmin/users*  \
 	***Endpoint Request Body Table:***
 
-	<h3 id="usersummary-table">USER DATA OBJECT	TABLE</h3>
+	<h3 id="user-table">FULL USER DATA OBJECT	TABLE</h3>
 		
 	 | Element|Description|Type|Required|Notes|
 	 | -----------|-------------|------|---------|--------|
@@ -531,6 +561,7 @@ The request table is the same as response table but includes an additional colum
 	 | password| Password of the user|String| Required|
 	 | reviews| List of all reviews|<a href="#review-table"> Review</a>|Not Required|
 
+	
 	***Endpoint Response Body Table:*** N/A\
 	***Endpoint Request  Body Sample  in JSON:*** N/A\
 	***Endpoint Response Sample:*** **200 OK**
@@ -548,7 +579,9 @@ The request table is the same as response table but includes an additional colum
 					"serviceName":  "Linear Algebra and Applications(SUMMER 2020)",
 					"reviewText":  "This course was challenging but interesting",
 					"dateCreated":  "2020-06-17T18:25:21.570+00:00",
-					"dateModified":  null
+					"dateModified":  null,
+					"score": "4"
+
 				},
 				{
 					"reviewID":  9,
@@ -557,7 +590,8 @@ The request table is the same as response table but includes an additional colum
 					"serviceName":  "Linear Algebra and Applications(SUMMER 2020)",
 					"reviewText":  "The course was challenging but interesting",
 					"dateCreated":  "2020-06-19T02:19:35.800+00:00",
-					"dateModified":  null
+					"dateModified":  null,
+					"score": "2.4"
 				}
 			],
 				"roles":  [
@@ -583,11 +617,11 @@ The request table is the same as response table but includes an additional colum
 	***Endpoint Response Sample:*** **200 OK**
 <br>
 
-12. ***Endpoint Name:*** Delete Review\
-	***Endpoint Description:*** Deletes a review from the system \
-   ***Endpoint Request Method:*** DELETE\
-  ***Endpoint Full URL Path:*** *localhost:8080/api/systemadmin/reviews/delete/{reviewID}*  \
-***Endpoint Request Body Table:*** N/A \
-***Endpoint Response Body Table:*** N/A\
-	***Endpoint Request  Body Sample  in JSON:*** N/A\
-	***Endpoint Response Sample:*** **200 OK**
+11. ***Endpoint Name:*** Search User\
+	***Endpoint Description:*** Searches for users that match the name specified. This will return a list of users matching the name parameter supplied.\
+	  ***Endpoint Request Method:*** GET\
+	***Endpoint Full URL Path:*** *localhost:8080/api/regularuser/search/{userName}*\
+    ***Endpoint Request Body Table:*** N/A \
+***Endpoint Request  Body Sample  in JSON:*** N/A \
+***Endpoint Response Sample:*** **200 OK**
+ A List of <a href="#user-table">Full User Data Object</a>

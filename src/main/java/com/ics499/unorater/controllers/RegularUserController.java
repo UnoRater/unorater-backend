@@ -1,6 +1,5 @@
 package com.ics499.unorater.controllers;
 
-
 import com.ics499.unorater.exceptions.ResourceNotFoundException;
 import com.ics499.unorater.models.Review;
 import com.ics499.unorater.models.Service;
@@ -15,6 +14,7 @@ import com.ics499.unorater.utils.BadWordFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +47,7 @@ public class RegularUserController {
      * @return The User summary
      */
     @GetMapping("/user/me")
+    @ResponseStatus(HttpStatus.OK)
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
         return new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getEmail());
     }
@@ -59,6 +60,7 @@ public class RegularUserController {
      *         on the frontend.
      */
     @GetMapping("/user/viewpublicservices")
+    @ResponseStatus(HttpStatus.OK)
     public List <Service> getAllPublicServices () {
         return serviceRepository.findPublicServices();
     }
@@ -68,6 +70,7 @@ public class RegularUserController {
      * @return a list of all services
      */
     @GetMapping("/user/viewallservices")
+    @ResponseStatus(HttpStatus.OK)
     public List <Service> getAllServices () {
         return serviceRepository.findAll();
     }
@@ -104,6 +107,7 @@ public class RegularUserController {
      * @return
      */
     @GetMapping("/user/me/profile")
+    @ResponseStatus(HttpStatus.OK)
     public UserProfile getUserProfile(@CurrentUser UserPrincipal userPrincipal) {
         User user = userRepository.findByuserName(userPrincipal.getUsername());
 
@@ -117,21 +121,23 @@ public class RegularUserController {
     /**
      * Posts user's review
      * @param review
+     * @param userPrincipal
      * @return Message Payload based operation success/failure.
      *         The major reason this would fail is if bad words
      *         were in the review.
      */
     @PostMapping ("user/me/postreview")
-    public ResponseEntity <?> makeReview (@RequestBody Review review) {
+    public ResponseEntity <?> makeReview (@CurrentUser UserPrincipal userPrincipal, @RequestBody Review review) {
         logger.info(review.toString());
         BadWordFilter.loadConfigs();
         List<String> badWordsFound = BadWordFilter.badWordsFound(review.getReviewText());
 
         if (badWordsFound.size() > 0) {
-            return ResponseEntity.ok(new ApiResponse(false, "Bad words found: " + badWordsFound.toString() + ". Please modify your review"));
+            return new ResponseEntity<>(new ApiResponse(false, "Bad words found: " + badWordsFound.toString() + ". Please modify your review"), HttpStatus.FORBIDDEN);
         }
 
         review.setDateCreated(new Date());
+        review.setUserID(userPrincipal.getId());
         reviewRepository.save(review);
         return ResponseEntity.ok("Review Created : " + review.getDateCreated());
     }
@@ -152,7 +158,7 @@ public class RegularUserController {
         List<String> badWordsFound = BadWordFilter.badWordsFound(newReview.getReviewText());
 
         if (badWordsFound.size() > 0) {
-            return ResponseEntity.ok(new ApiResponse(true, "Bad words found: " + badWordsFound.toString() + ". Please modify your review"));
+            return new ResponseEntity<>(new ApiResponse(false, "Bad words found: " + badWordsFound.toString() + ". Please modify your review"), HttpStatus.FORBIDDEN);
         }
 
         oldReview.setReviewText(newReview.getReviewText());
@@ -166,6 +172,7 @@ public class RegularUserController {
      * @param reviewID
      */
     @DeleteMapping("user/me/deletereview/{reviewID}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public void deleteReview (@PathVariable Integer reviewID) {
         reviewRepository.deleteById(reviewID);
     }
@@ -176,6 +183,7 @@ public class RegularUserController {
      * @return
      */
     @GetMapping("/regularuser/search/{serviceName}")
+    @ResponseStatus(HttpStatus.OK)
     public List<Service> searchServices (@PathVariable String serviceName) {
         return serviceRepository.searchServices(serviceName);
     }

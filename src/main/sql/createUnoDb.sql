@@ -79,6 +79,7 @@ CREATE TABLE
     reviewtext VARCHAR(500) NOT NULL,
     datecreated DATETIME NOT NULL,
     datemodified DATETIME NULL,
+    score VARCHAR(5) NOT NULL,
     FOREIGN KEY (userid) REFERENCES Users(userid),
     FOREIGN KEY (serviceid) REFERENCES [Services](serviceid)
 )
@@ -91,13 +92,15 @@ INSERT INTO [dbo].[Users]
            ,[username]
            ,[password]
            ,[email]
-           ,[datecreated])
+           ,[datecreated]
+           ,[departmentno])
      VALUES
            (1
            ,N'Seyi'
            ,N'$2a$10$Ys3mpRhR.z.u1SfVAHqiNOfxi.KzgyoNXU6D2mijuKRQBaK3P7D2u'
            ,N'oluwaseyi.ola@my.metrostate.edu'
-           ,CAST(N'2020-06-12' AS DATETIME))
+           ,CAST(N'2020-06-12' AS DATETIME)
+           ,0)
 GO
 
 INSERT INTO [dbo].[Users]
@@ -201,14 +204,16 @@ INSERT INTO [dbo].[Reviews]
             ,[serviceid]
             ,[reviewtext]
             ,[datecreated]
-            ,[datemodified])
+            ,[datemodified]
+            ,[score])
         VALUES
             (1
             ,1
             ,1
             ,N'This course was very informative and interesting. The professor, Prof. Ismail was very professional'
             ,CAST(N'2020-06-12' AS DATETIME)
-            ,NULL)
+            ,NULL
+            ,'4.5')
 GO
 INSERT INTO [dbo].[Reviews]
             ([reviewid]
@@ -216,14 +221,16 @@ INSERT INTO [dbo].[Reviews]
             ,[serviceid]
             ,[reviewtext]
             ,[datecreated]
-            ,[datemodified])
+            ,[datemodified]
+            ,[score])
         VALUES
         (2
         ,1
         ,2
         ,N'This course was a bit challenging but hey, its maths'
         ,CAST(N'2020-06-12' AS DATETIME)
-        ,NULL)
+        ,NULL
+        ,'3')
 GO
 SET IDENTITY_INSERT dbo.Reviews OFF
 GO

@@ -223,7 +223,7 @@ The request table is the same as response table but includes an additional colum
 </table><p><em><strong>Endpoint Request Sample  in JSON:</strong></em></p>
 <pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">{</span>
   <span class="token string">"serviceName"</span>  <span class="token punctuation">:</span>  <span class="token string">"Dummy Service"</span><span class="token punctuation">,</span>
-  <span class="token string">"serviceDescription"</span>  <span class="token punctuation">:</span>  <span class="token string">"This is an API test"</span>
+  <span class="token string">"serviceDescription"</span>  <span class="token punctuation">:</span>  <span class="token string">"This is an API test"</span><span class="token punctuation">,</span>
   <span class="token string">"publicService"</span> <span class="token punctuation">:</span> <span class="token boolean">true</span>
 <span class="token punctuation">}</span>
 </code></pre>
@@ -350,8 +350,18 @@ The request table is the same as response table but includes an additional colum
   <span class="token string">"message"</span><span class="token punctuation">:</span>  <span class="token string">"Service 8 successfully deleted"</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<br>
-<br>
+</li>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> Search Services<br>
+<em><strong>Endpoint Description:</strong></em> Searches for services that match the name specified.<br>
+<em><strong>Endpoint Request Method:</strong></em> GET<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/departmentadmin/search/{serviceName}</em><br>
+<em><strong>Endpoint Request Body Table:</strong></em> N/A <br>
+<em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A <br>
+<em><strong>Endpoint Response Sample:</strong></em> <strong>200 OK</strong><br>
+A List of <a href="#service-table">Service Data Object</a><br>
+<br><br>
+<br></p>
 </li>
 </ol>
 <h2 id="depadmin-api">Regular User API</h2>
@@ -546,6 +556,7 @@ See <em>Service</em> Objects List  in JSON Response : 	<a href="#department-tabl
 			<span class="token string">"reviewText"</span><span class="token punctuation">:</span>  <span class="token string">"This course was very informative and interesting. The professor, Prof. Ismail was very professional"</span><span class="token punctuation">,</span>
 			<span class="token string">"dateCreated"</span><span class="token punctuation">:</span>  <span class="token string">"2020-06-12T05:00:00.000+00:00"</span><span class="token punctuation">,</span>
 			<span class="token string">"dateModified"</span><span class="token punctuation">:</span>  <span class="token keyword">null</span><span class="token punctuation">,</span>
+			<span class="token string">"score"</span><span class="token punctuation">:</span> <span class="token string">"5"</span>
 		<span class="token punctuation">}</span>
 	<span class="token punctuation">]</span><span class="token punctuation">,</span>
 	<span class="token string">"username"</span><span class="token punctuation">:</span>  <span class="token string">"John"</span>
@@ -623,12 +634,20 @@ See <em>Service</em> Objects List  in JSON Response : 	<a href="#department-tabl
 <td>Not Required</td>
 <td></td>
 </tr>
+<tr>
+<td>score</td>
+<td>Rating score</td>
+<td>String</td>
+<td>Required</td>
+<td></td>
+</tr>
 </tbody>
 </table><p><em><strong>Endpoint Response Body Table:</strong></em> N/A</p>
 <p><em><strong>Endpoint Request  Body Sample  in JSON:</strong></em></p>
 <pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">{</span>
   <span class="token string">"serviceID"</span><span class="token punctuation">:</span>  <span class="token number">2</span><span class="token punctuation">,</span>
-  <span class="token string">"reviewText"</span><span class="token punctuation">:</span><span class="token string">"I really understood the course content"</span>
+  <span class="token string">"reviewText"</span><span class="token punctuation">:</span><span class="token string">"I really understood the course content"</span><span class="token punctuation">,</span>
+  <span class="token string">"score"</span><span class="token punctuation">:</span> <span class="token string">"4.5"</span>
 <span class="token punctuation">}</span>
 </code></pre>
 <p><em><strong>Endpoint Response Sample:</strong></em> <strong>200 OK</strong><br>
@@ -654,11 +673,21 @@ See <em>Service</em> Objects List  in JSON Response : 	<a href="#department-tabl
 <em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/user/me/deletereview/{reviewID}</em><br>
 <em><strong>Endpoint Request Body Table:</strong></em> N/A <br>
 <em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A <br>
+<em><strong>Endpoint Response Sample:</strong></em> <strong>200 OK</strong></p>
+</li>
+<li>
+<p><em><strong>Endpoint Name:</strong></em> Search Services<br>
+<em><strong>Endpoint Description:</strong></em> Searches for services that match the name specified.<br>
+<em><strong>Endpoint Request Method:</strong></em> GET<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/regularuser/search/{serviceName}</em><br>
+<em><strong>Endpoint Request Body Table:</strong></em> N/A <br>
+<em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A <br>
 <em><strong>Endpoint Response Sample:</strong></em> <strong>200 OK</strong><br>
-<br><br>
-<br></p>
+A List of <a href="#service-table">Service Data Object</a></p>
 </li>
 </ol>
+<br>
+<br>
 <h2 id="depadmin-api">System Admin API</h2>
 <p><strong>Resource Name:</strong> System Administrator<br>
 <strong>Resource Description:</strong> Provides API endpoints available to a System Admin User<br>
@@ -780,8 +809,12 @@ See <em>Service</em> Objects List  in JSON Response : 	<a href="#department-tabl
 <em><strong>Endpoint Request Body Table:</strong></em> N/A <br>
 <em><strong>Endpoint Response Body Table:</strong></em> N/A<br>
 <em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A<br>
-<em><strong>Endpoint Response Sample:</strong></em> <strong>200 OK</strong><br>
-<br></p>
+<em><strong>Endpoint Response Sample:</strong></em> <strong>200 OK</strong></p>
+<pre class=" language-json"><code class="prism  language-json"><span class="token punctuation">{</span>
+  <span class="token string">"departmentName"</span><span class="token punctuation">:</span> <span class="token string">"Department of Social Justices(formely Sciences)"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<br>
 </li>
 <li>
 <p><em><strong>Endpoint Name:</strong></em> Get users<br>
@@ -789,7 +822,7 @@ See <em>Service</em> Objects List  in JSON Response : 	<a href="#department-tabl
 <em><strong>Endpoint Request Method:</strong></em> GET<br>
 <em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/systemadmin/users</em>  <br>
 <em><strong>Endpoint Request Body Table:</strong></em></p>
-<h3 id="usersummary-table">USER DATA OBJECT	TABLE</h3>
+<h3 id="user-table">FULL USER DATA OBJECT	TABLE</h3>
 
 <table>
 <thead>
@@ -855,6 +888,8 @@ See <em>Service</em> Objects List  in JSON Response : 	<a href="#department-tabl
 				<span class="token string">"reviewText"</span><span class="token punctuation">:</span>  <span class="token string">"This course was challenging but interesting"</span><span class="token punctuation">,</span>
 				<span class="token string">"dateCreated"</span><span class="token punctuation">:</span>  <span class="token string">"2020-06-17T18:25:21.570+00:00"</span><span class="token punctuation">,</span>
 				<span class="token string">"dateModified"</span><span class="token punctuation">:</span>  <span class="token keyword">null</span><span class="token punctuation">,</span>
+				<span class="token string">"score"</span><span class="token punctuation">:</span> <span class="token string">"4"</span>
+
 			<span class="token punctuation">}</span><span class="token punctuation">,</span>
 			<span class="token punctuation">{</span>
 				<span class="token string">"reviewID"</span><span class="token punctuation">:</span>  <span class="token number">9</span><span class="token punctuation">,</span>
@@ -864,6 +899,7 @@ See <em>Service</em> Objects List  in JSON Response : 	<a href="#department-tabl
 				<span class="token string">"reviewText"</span><span class="token punctuation">:</span>  <span class="token string">"The course was challenging but interesting"</span><span class="token punctuation">,</span>
 				<span class="token string">"dateCreated"</span><span class="token punctuation">:</span>  <span class="token string">"2020-06-19T02:19:35.800+00:00"</span><span class="token punctuation">,</span>
 				<span class="token string">"dateModified"</span><span class="token punctuation">:</span>  <span class="token keyword">null</span><span class="token punctuation">,</span>
+				<span class="token string">"score"</span><span class="token punctuation">:</span> <span class="token string">"2.4"</span>
 			<span class="token punctuation">}</span>
 		<span class="token punctuation">]</span><span class="token punctuation">,</span>
 			<span class="token string">"roles"</span><span class="token punctuation">:</span>  <span class="token punctuation">[</span>
@@ -893,14 +929,14 @@ See <em>Service</em> Objects List  in JSON Response : 	<a href="#department-tabl
 <br></p>
 </li>
 <li>
-<p><em><strong>Endpoint Name:</strong></em> Delete Review<br>
-<em><strong>Endpoint Description:</strong></em> Deletes a review from the system <br>
-<em><strong>Endpoint Request Method:</strong></em> DELETE<br>
-<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/systemadmin/reviews/delete/{reviewID}</em>  <br>
+<p><em><strong>Endpoint Name:</strong></em> Search User<br>
+<em><strong>Endpoint Description:</strong></em> Searches for users that match the name specified. This will return a list of users matching the name parameter supplied.<br>
+<em><strong>Endpoint Request Method:</strong></em> GET<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/regularuser/search/{userName}</em><br>
 <em><strong>Endpoint Request Body Table:</strong></em> N/A <br>
-<em><strong>Endpoint Response Body Table:</strong></em> N/A<br>
-<em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A<br>
-<em><strong>Endpoint Response Sample:</strong></em> <strong>200 OK</strong></p>
+<em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A <br>
+<em><strong>Endpoint Response Sample:</strong></em> <strong>200 OK</strong><br>
+A List of <a href="#user-table">Full User Data Object</a></p>
 </li>
 </ol>
 </div>
