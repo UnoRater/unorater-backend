@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -55,7 +54,7 @@ public class SystemAdminController {
             }
         }
 
-        user.setRoles(Collections.singleton(userRole));
+        user.getRoles().add(userRole);
         userRepository.save(user);
 
         return ResponseEntity.ok(new ApiResponse(true, "Role " + RoleName.ROLE_SYSTEM_ADMIN + " Successfully Assigned to User " + user.getUserName()));
