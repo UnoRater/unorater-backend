@@ -40,6 +40,9 @@ public class Service {
     @OneToMany(mappedBy="service")
     private Set<Review> reviews;
 
+    @Transient
+    private double aggregateScore;
+
     @Column(name = "DATECREATED")
     private Date dateCreated;
 
@@ -98,19 +101,19 @@ public class Service {
         return departmentID;
     }
 
-    /*
     @JsonInclude
-    public Set <Review> getNonFlaggedReviews () {
-
-        Set <Review> nFlagged = new HashSet<>();
+    public double getAggregateScore() {
+        double totalScore = 0;
+        double overallScore = 0;
         for (Review review : reviews) {
-            if (!review.isFlagged()) {
-                nFlagged.add(review);
-            }
+            totalScore += Double.parseDouble(review.getScore());
+            overallScore += 5;
         }
-        return nFlagged;
+
+        aggregateScore = (totalScore / overallScore) * 5;
+
+        return aggregateScore;
     }
-     */
 
     public void setDepartmentID(int departmentID) {
         this.departmentID = departmentID;
