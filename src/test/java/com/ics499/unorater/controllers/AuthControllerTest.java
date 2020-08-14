@@ -1,38 +1,74 @@
 package com.ics499.unorater.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ics499.unorater.payloads.LoginRequest;
+import com.ics499.unorater.models.Role;
+import com.ics499.unorater.models.User;
+import com.ics499.unorater.models.enums.RoleName;
+import com.ics499.unorater.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import java.util.Date;
 
-@WebMvcTest(controllers = AuthController.class)
-@WebAppConfiguration
+import static org.assertj.core.api.Assertions.assertThat;
+
+/**
+ * Tests that the UserRepository is fetching the
+ * right data for authentication, and storing
+ * the correct data for registration.
+ */
+@SpringBootTest
 public class AuthControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    private UserRepository userRepository;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    PasswordEncoder encoder;
 
     @Test
-    void whenValidLoginRequest_thenReturns200() throws Exception {
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setUsernameOrEmail("Seyi");
-        loginRequest.setPassword("12iuN01!");
+    void authenticationTest() {
 
-        mockMvc.perform(post("/api/auth/sigin")
-                .contentType("application.json")
-                .content(objectMapper.writeValueAsString(loginRequest))).andExpect(status().isOk());
+        // Arrange and Act
+        User user = userRepository.findByuserName("Seyi");
+
+        // Assert
+        assertThat(user.getEmail()).isEqualTo("oluwaseyi.ola@my.metrostate.edu");
+        for (Role role:
+             user.getRoles()) {
+            assertThat(role.getName().equals(RoleName.ROLE_REGULAR_USER)
+                    || role.getName().equals(RoleName.ROLE_SYSTEM_ADMIN) || role.getName().equals(RoleName.ROLE_DEPARTMENT_ADMIN)).isTrue();
+        }
     }
+
+    @Test
+    void registrationTest() {
+
+        User testUser = userRepository.findByuserName("TestUser");
+
+        if (testUser != null) {
+            userRepository.delete(testUser);
+        }
+
+        // Arrange
+        User user =  new User();
+
+        // Act
+        user.setUserName("TestUser");
+        user.setEmail("TestUser@gmail.com");
+        user.setPassword(encoder.encode("123pass"));
+        //user.setRoles(Collections.singleton(userRole));
+        user.setDateCreated(new Date());
+
+        // Assert
+        User result = userRepository.save(user);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getUserName()).isEqualTo("TestUser");
+        assertThat(result.getEmail()).isEqualTo("TestUser@gmail.com");
+        assertThat(encoder.matches("123pass", result.getPassword()));
+
+    }
+
 }

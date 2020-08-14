@@ -2,6 +2,8 @@ package com.ics499.unorater.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.ics499.unorater.models.enums.RoleName;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
@@ -108,6 +110,21 @@ public class User {
 
     public List<Review> getReviews() {
         return reviews;
+    }
+
+    @JsonInclude
+    public String getRolesString () {
+        StringBuilder rolesAggString = new StringBuilder("");
+        for (Role role : roles) {
+            if (role.getName().equals(RoleName.ROLE_DEPARTMENT_ADMIN)){
+                rolesAggString.append(role.getName()).append("(Dept Num: ").append(getDepartmentNum()).append("), ");
+            }else{
+                rolesAggString.append(role.getName()).append(", ");
+            }
+
+        }
+        String fString = rolesAggString.toString().trim();
+        return  fString;
     }
 
     public void setReviews(List<Review> reviews) {

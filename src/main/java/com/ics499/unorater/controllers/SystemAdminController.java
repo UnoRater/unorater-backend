@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -35,6 +36,9 @@ public class SystemAdminController {
     @Autowired
     private ReviewRepository reviewRepository;
 
+    @Autowired
+    private UsersRolesRepository usersRolesRepository;
+
     private static final Logger logger = LoggerFactory.getLogger(RegularUserController.class);
 
     /**
@@ -42,7 +46,7 @@ public class SystemAdminController {
      * @param userID The userID
      * @return Response payload based on operation success/failure.
      */
-    @PostMapping ("/grantsysadminrole/{userID}")
+    @RequestMapping(value = "/grantsysadminrole/{userID}", method = { RequestMethod.GET, RequestMethod.POST })
     public ResponseEntity <?> grantSysAdminRole (@PathVariable Integer userID) {
         User user = userRepository.findById(userID).get();
         Role userRole = roleRepository.findByName(RoleName.ROLE_SYSTEM_ADMIN)
@@ -60,12 +64,13 @@ public class SystemAdminController {
         return ResponseEntity.ok(new ApiResponse(true, "Role " + RoleName.ROLE_SYSTEM_ADMIN + " Successfully Assigned to User " + user.getUserName()));
     }
 
+
     /**
      * Removes system admin role from user.
      * @param userID The userID
      * @return Response payload based on operation success/failure.
      */
-    @PostMapping ("/removesysadminrole/{userID}")
+    @RequestMapping(value = "/removesysadminrole/{userID}", method = { RequestMethod.GET, RequestMethod.POST })
     public ResponseEntity <?> removeSysAdminRole (@PathVariable Integer userID) {
         User user = userRepository.findById(userID).get();
         Role userRole = roleRepository.findByName(RoleName.ROLE_SYSTEM_ADMIN)
@@ -83,7 +88,7 @@ public class SystemAdminController {
      * @param departmentID The departmentID to be granted admin authority on.
      * @return Response payload based on operation success/failure.
      */
-    @PostMapping ("/grantdepadminrole/{userID}/{departmentID}")
+    @RequestMapping(value = "/grantdepadminrole/{userID}/{departmentID}", method = { RequestMethod.GET, RequestMethod.POST })
     public ResponseEntity <?> grantDepartmentAdminRole (@PathVariable Integer userID, @PathVariable Integer departmentID) {
         Role userRole = roleRepository.findByName(RoleName.ROLE_DEPARTMENT_ADMIN)
                 .orElseThrow(() -> new AppException("Role not set."));
@@ -107,7 +112,7 @@ public class SystemAdminController {
      * @param userID The userID
      * @return Response payload based on operation success/failure.
      */
-    @PostMapping ("/removedepadminrole/{userID}")
+    @RequestMapping(value = "/removedepadminrole/{userID}", method = { RequestMethod.GET, RequestMethod.POST })
     public ResponseEntity <?> removeDepartmentAdminRole (@PathVariable Integer userID) {
         Role userRole = roleRepository.findByName(RoleName.ROLE_DEPARTMENT_ADMIN)
                 .orElseThrow(() -> new AppException("Role not set."));
@@ -133,12 +138,13 @@ public class SystemAdminController {
 
     /**
      * Creates a new department
-     * @param department The department to be persisted
+     * @param departmentName The department name to be persisted
      * @return Response payload based on operation success/failure.
      */
-    @PostMapping("/systemadmin/createdepartment")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> addDepartment (@RequestBody Department department) {
+    @RequestMapping(value = "/systemadmin/createdepartment/{departmentName}", method = { RequestMethod.GET, RequestMethod.POST })
+    public ResponseEntity<?> addDepartment (@PathVariable String departmentName) {
+        Department department = new Department();
+        department.setDepartmentName(departmentName);
         departmentRepository.save(department);
         return ResponseEntity.ok(new ApiResponse(true, "Department Added Successfully"));
     }
@@ -147,9 +153,10 @@ public class SystemAdminController {
      * Deletes a department
      * @param departmentID The departmentID
      */
-    @DeleteMapping("/systemadmin/delete/{departmentID}")
-    public void deleteDepartment (@PathVariable Integer departmentID) {
+    @RequestMapping(value = "/systemadmin/delete/{departmentID}", method = { RequestMethod.GET, RequestMethod.POST })
+    public ResponseEntity<?> deleteDepartment (@PathVariable Integer departmentID) {
         departmentRepository.deleteById(departmentID);
+        return ResponseEntity.ok(new ApiResponse(true, "Department Deleted Successfully"));
     }
 
     /**
@@ -157,12 +164,13 @@ public class SystemAdminController {
      * @param departmentID The departmentID.
      * @param newName The new name to assign to department.
      */
-    @PutMapping("/systemadmin/department/rename/{departmentID}")
-    @ResponseStatus(HttpStatus.OK)
-    public void updateDepartmentName (@PathVariable Integer departmentID, @RequestBody String newName) {
+    @RequestMapping(value ="/systemadmin/department/rename/{departmentID}/{newName}", method = { RequestMethod.GET, RequestMethod.POST })
+    public ResponseEntity<?> updateDepartmentName (@PathVariable Integer departmentID, @PathVariable String newName) {
         Department department = departmentRepository.findById(departmentID).get();
         department.setDepartmentName(newName);
         departmentRepository.save(department);
+
+        return ResponseEntity.ok(new ApiResponse(true, "Department Successfully Renamed to: " + newName));
     }
 
     /**
@@ -178,9 +186,18 @@ public class SystemAdminController {
      * Deletes a user
      * @param userID The userID
      */
-    @DeleteMapping ("/systemadmin/user/delete/{userID}")
-    public void deleteUser (@PathVariable Integer userID) {
-        userRepository.deleteById(userID);
+    @RequestMapping(value = "/systemadmin/user/delete/{userID}", method = { RequestMethod.GET, RequestMethod.POST })
+    public ResponseEntity<?> deleteUser (@PathVariable Integer userID) {
+
+        User userToDelete = userRepository.findById(userID).get();
+
+        //usersRolesRepository.deleteUserRoles(userToDelete.getUserID());
+        if (!userToDelete.getRoles().isEmpty()) {
+            userToDelete.getRoles().clear();
+        }
+        userRepository.delete(userToDelete);
+
+        return ResponseEntity.ok(new ApiResponse(true, "User: " + userToDelete.getUserName() +  " has been successfully deleted from the system"));
     }
 
 
@@ -190,15 +207,5 @@ public class SystemAdminController {
     @DeleteMapping("/systemadmin/reviews/delete/{reviewID}")
     public void deleteReview (@PathVariable Integer reviewID) {
         reviewRepository.deleteById(reviewID);
-    }
-
-    /**
-     * Searches for users that match the name specified
-     * @param userName
-     * @return
-     */
-    @GetMapping ("/systemadmin/users/search/{userName}")
-    public List <User> searchUser (@PathVariable String userName) {
-       return userRepository.searchUsers(userName);
     }
 }

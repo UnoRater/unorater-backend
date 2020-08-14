@@ -3,6 +3,7 @@ package com.ics499.unorater.repositories;
 import com.ics499.unorater.models.Role;
 import com.ics499.unorater.models.enums.RoleName;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

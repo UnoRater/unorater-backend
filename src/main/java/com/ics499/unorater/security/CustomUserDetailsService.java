@@ -6,6 +6,7 @@ import com.ics499.unorater.models.User;
 import com.ics499.unorater.models.UserPrincipal;
 import com.ics499.unorater.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -35,6 +36,11 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found with username or email : " + usernameOrEmail);
         }
 
+    }
+
+    @Bean
+    public UserRepository userRepository() {
+        return userRepository;
     }
 
     @Transactional
