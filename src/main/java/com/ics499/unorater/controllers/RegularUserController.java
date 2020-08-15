@@ -120,14 +120,24 @@ public class RegularUserController {
 
     /**
      * Posts user's review
-     * @param review
+     * @param serviceID
+     * @param reviewText
+     * @param score
      * @param userPrincipal
      * @return Message Payload based operation success/failure.
      *         The major reason this would fail is if bad words
      *         were in the review.
      */
-    @PostMapping ("user/me/postreview")
-    public ResponseEntity <?> makeReview (@CurrentUser UserPrincipal userPrincipal, @RequestBody Review review) {
+    @RequestMapping(value = "user/me/postreview/{serviceID}/{reviewText}/{score}", method = { RequestMethod.GET, RequestMethod.POST })
+    public ResponseEntity <?> makeReview (@CurrentUser UserPrincipal userPrincipal,
+                                          @PathVariable Integer serviceID,
+                                          @PathVariable String reviewText,
+                                          @PathVariable String score) {
+
+        Review review = new Review();
+        review.setServiceID(serviceID);
+        review.setReviewText(reviewText);
+        review.setScore(score);
         logger.info(review.toString());
         BadWordFilter.loadConfigs();
         List<String> badWordsFound = BadWordFilter.badWordsFound(review.getReviewText());
@@ -144,13 +154,21 @@ public class RegularUserController {
 
     /**
      * Updates a user's review
-     * @param newReview The new replacing old one.
+     * @param newReviewText The new replacing old one.
      * @return Message Payload based operation success/failure.
      *         The major reason this would fail is if bad words
      *         were in the review
      */
-    @PutMapping ("user/me/updatereview")
-    public ResponseEntity <?> updateReview (@RequestBody Review newReview) {
+    @RequestMapping(value = "user/me/updatereview/{reviewID}/{newReviewText}/{score}", method = { RequestMethod.GET, RequestMethod.PUT })
+    public ResponseEntity <?> updateReview (@PathVariable String newReviewText,
+                                            @PathVariable Integer reviewID,
+                                            @PathVariable String score) {
+
+        Review newReview = new Review();
+
+        newReview.setScore(score);
+        newReview.setReviewText(newReviewText);
+        newReview.setReviewID(reviewID);
 
         logger.info(newReview.toString());
         BadWordFilter.loadConfigs();
