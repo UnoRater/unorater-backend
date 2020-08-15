@@ -1,6 +1,6 @@
 ﻿
 # UNORATER BACKEND API DOCUMENTATION
-This document provides detailed information about various API requests and responses available to the Unorater application backend. The requests use **Create Read Update Delete** operations synonymous to the **POST GET PUT DELETE** HTTP commands along with requests data in **JavaScript Object Notaion (JSON)** to send and recieve data to and from the backend server. 
+This document provides detailed information about various API requests and responses available to the Unorater application backend. The requests use **Create Read Update Delete** operations synonymous to the **POST GET PUT DELETE** HTTP commands along with requests data in **JavaScript Object Notaion (JSON)** to send and recieve data to and from the backend server. Our system uses mostly **GET** operations based on the preference of recieving a response from the server.
 
 Since most JSON elements are nested (objects inside objects, arrays inside arrays, arrays inside objects e.t.c) , elements nested inside another element are either indented in the table - if the object is used only once, or linked to a table for the object type- if the object is reused (the latter option is used throughout this documentation). Also, note that the element names are case sensitive, something to keep in mind when making the API calls. To understand the JSON syntax, read more [here](https://www.tutorialspoint.com/json/json_syntax.htm).
 
@@ -28,7 +28,7 @@ The request table is the same as response table but includes an additional colum
 
 1. ***Endpoint Name:*** User Sign-up\
 	***Endpoint Description:*** Signs up a user with REGULAR_USER role into the system.\
-	***Endpoint Request Method:*** POST\
+	***Endpoint Request Method:*** GET/POST\
 	***Endpoint Full URL Path:*** *localhost:8080/api/auth/signup*\
 	***Endpoint Request Table:*** 
 	<h3 id="signup-table">SIGN-UP REQUEST DATA OBJECT TABLE</h3>
@@ -93,22 +93,22 @@ The request table is the same as response table but includes an additional colum
 	
 4. ***Endpoint Name:*** Department Adminstrator Sign-in\
 	***Endpoint Description:*** Signs a user with DEPARTMENT_ADMIN role into the system. This endpoint will return an access token in the response body that will be used to identify the user.\
-	***Endpoint Request Method:*** POST\
-	***Endpoint Full URL Path:*** *localhost:8080/api/auth/departmentadminsignin*\
+	***Endpoint Request Method:*** POST/GET\
+	***Endpoint Full URL Path:*** *localhost:8080/api/auth/departmentadminsignin/***(with required fields)*\
 	***Endpoint Request Table:***
 	<a href="#signin-table">Login-In Request Data Object</a>
 	<br>
 	<br>
 <h2 id="depadmin-api">Department Admin API</h2>
 
-**Resource Name:** Department Adminstrator\
+**Resource Name:** Department Administrator\
 **Resource Description:** Provides API endpoints available to a Department Admin Users. A necessary precondition is that department admins have been assigned their respective department number before this resource is accessed. \
 **Resource Access:** ROLE_DEPARTMENT_ADMIN only
 
 1. ***Endpoint Name:*** Add Service
 	***Endpoint Description:*** Adds a Service to the deaprtment
-	***Endpoint Request Method:*** POST
-	***Endpoint Full URL Path:*** *localhost:8080/api/departmentadmin/addservice*
+	***Endpoint Request Method:*** GET
+	***Endpoint Full URL Path:*** *localhost:8080/api/departmentadmin/addservice/***(with required fields)*
 	***Endpoint Body Request Table:***
 	<h3 id="service-table">SERVICE DATA OBJECT TABLE</h3>
 	
@@ -217,8 +217,8 @@ The request table is the same as response table but includes an additional colum
 	<br>
 4.  ***Endpoint Name:*** Delete Service\
 	***Endpoint Description:*** Deletes a service and reviews associted with in from the system.\
-	***Endpoint Request Method:*** DELETE\
-	***Endpoint Full URL Path:*** *localhost:8080/api/departmentadmin/delete/{serviceID}*\
+	***Endpoint Request Method:*** DELETE/GET\
+	***Endpoint Full URL Path:*** *localhost:8080/api/departmentadmin/delete/{serviceID}*/***(with required fields)\
 	***Endpoint Request Body Table:*** N/A\
 	***Endpoint Request  Body Sample  in JSON:*** N/A\
 	***Endpoint Response Sample in JSON:*** **200 OK**
@@ -365,8 +365,8 @@ The request table is the same as response table but includes an additional colum
 
 7. ***Endpoint Name:*** Post Review\
 	***Endpoint Description:*** Posts a currently authenticated user's review.\
-	  ***Endpoint Request Method:*** POST\
-	***Endpoint Full URL Path:*** *localhost:8080/api/user/me/postreview*\
+	  ***Endpoint Request Method:*** POST/GET\
+	***Endpoint Full URL Path:*** *localhost:8080/api/user/me/postreview*/**(with required fields)\
     ***Endpoint Request Body Table:***
 	<h3 id="review-table">Review Data Object Table</h3>
 

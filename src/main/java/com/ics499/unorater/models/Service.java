@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -41,7 +42,7 @@ public class Service {
     private Set<Review> reviews;
 
     @Transient
-    private double aggregateScore;
+    private Double aggregateScore;
 
     @Column(name = "DATECREATED")
     private Date dateCreated;
@@ -112,7 +113,9 @@ public class Service {
 
         aggregateScore = (totalScore / overallScore) * 5;
 
-        return aggregateScore;
+        DecimalFormat formatter = new DecimalFormat("#0.0");
+
+        return aggregateScore.isNaN() ? 0 : Double.parseDouble(formatter.format(aggregateScore));
     }
 
     public void setDepartmentID(int departmentID) {

@@ -10,7 +10,7 @@
 
 <body class="stackedit">
   <div class="stackedit__html"><h1 id="unorater-backend-api-documentation">UNORATER BACKEND API DOCUMENTATION</h1>
-<p>This document provides detailed information about various API requests and responses available to the Unorater application backend. The requests use <strong>Create Read Update Delete</strong> operations synonymous to the <strong>POST GET PUT DELETE</strong> HTTP commands along with requests data in <strong>JavaScript Object Notaion (JSON)</strong> to send and recieve data to and from the backend server.</p>
+<p>This document provides detailed information about various API requests and responses available to the Unorater application backend. The requests use <strong>Create Read Update Delete</strong> operations synonymous to the <strong>POST GET PUT DELETE</strong> HTTP commands along with requests data in <strong>JavaScript Object Notaion (JSON)</strong> to send and recieve data to and from the backend server. Our system uses mostly <strong>GET</strong> operations based on the preference of recieving a response from the server.</p>
 <p>Since most JSON elements are nested (objects inside objects, arrays inside arrays, arrays inside objects e.t.c) , elements nested inside another element are either indented in the table - if the object is used only once, or linked to a table for the object type- if the object is reused (the latter option is used throughout this documentation). Also, note that the element names are case sensitive, something to keep in mind when making the API calls. To understand the JSON syntax, read more <a href="https://www.tutorialspoint.com/json/json_syntax.htm">here</a>.</p>
 <p>The information about all endpoints and the HTTP methods they make use of are documented along with a table showing the details of the JSON format request/response body. The backend makes use of JSON Web Tokens(<a href="https://tools.ietf.org/html/rfc7519">JWT</a>) to authenticate users. The backend is engineered to categorize users of the system into three access levels: regular users, department administrators, and system administrators. Resources are restricted to users based on their “access level” or “roles”. All resources except the authentication resource requires a JWT along with the right role to access.</p>
 <p>The columns of the tables:</p>
@@ -32,7 +32,7 @@ The request table is the same as response table but includes an additional colum
 <li>
 <p><em><strong>Endpoint Name:</strong></em> User Sign-up<br>
 <em><strong>Endpoint Description:</strong></em> Signs up a user with REGULAR_USER role into the system.<br>
-<em><strong>Endpoint Request Method:</strong></em> POST<br>
+<em><strong>Endpoint Request Method:</strong></em> GET/POST<br>
 <em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/auth/signup</em><br>
 <em><strong>Endpoint Request Table:</strong></em></p>
  <h3 id="signup-table">SIGN-UP REQUEST DATA OBJECT TABLE</h3>
@@ -145,8 +145,8 @@ The request table is the same as response table but includes an additional colum
 <li>
 <p><em><strong>Endpoint Name:</strong></em> Department Adminstrator Sign-in<br>
 <em><strong>Endpoint Description:</strong></em> Signs a user with DEPARTMENT_ADMIN role into the system. This endpoint will return an access token in the response body that will be used to identify the user.<br>
-<em><strong>Endpoint Request Method:</strong></em> POST<br>
-<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/auth/departmentadminsignin</em><br>
+<em><strong>Endpoint Request Method:</strong></em> POST/GET<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/auth/departmentadminsignin/</em>*<em>(with required fields)</em><br>
 <em><strong>Endpoint Request Table:</strong></em><br>
 <a href="#signin-table">Login-In Request Data Object</a><br>
 <br><br>
@@ -154,15 +154,15 @@ The request table is the same as response table but includes an additional colum
 </li>
 </ol>
 <h2 id="depadmin-api">Department Admin API</h2>
-<p><strong>Resource Name:</strong> Department Adminstrator<br>
+<p><strong>Resource Name:</strong> Department Administrator<br>
 <strong>Resource Description:</strong> Provides API endpoints available to a Department Admin Users. A necessary precondition is that department admins have been assigned their respective department number before this resource is accessed. <br>
 <strong>Resource Access:</strong> ROLE_DEPARTMENT_ADMIN only</p>
 <ol>
 <li>
 <p><em><strong>Endpoint Name:</strong></em> Add Service<br>
 <em><strong>Endpoint Description:</strong></em> Adds a Service to the deaprtment<br>
-<em><strong>Endpoint Request Method:</strong></em> POST<br>
-<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/departmentadmin/addservice</em><br>
+<em><strong>Endpoint Request Method:</strong></em> GET<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/departmentadmin/addservice/</em>*<em>(with required fields)</em><br>
 <em><strong>Endpoint Body Request Table:</strong></em></p>
  <h3 id="service-table">SERVICE DATA OBJECT TABLE</h3>
 
@@ -349,8 +349,8 @@ The request table is the same as response table but includes an additional colum
 <li>
 <p><em><strong>Endpoint Name:</strong></em> Delete Service<br>
 <em><strong>Endpoint Description:</strong></em> Deletes a service and reviews associted with in from the system.<br>
-<em><strong>Endpoint Request Method:</strong></em> DELETE<br>
-<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/departmentadmin/delete/{serviceID}</em><br>
+<em><strong>Endpoint Request Method:</strong></em> DELETE/GET<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/departmentadmin/delete/{serviceID}</em>/***(with required fields)<br>
 <em><strong>Endpoint Request Body Table:</strong></em> N/A<br>
 <em><strong>Endpoint Request  Body Sample  in JSON:</strong></em> N/A<br>
 <em><strong>Endpoint Response Sample in JSON:</strong></em> <strong>200 OK</strong></p>
@@ -578,8 +578,8 @@ See <em>Service</em> Objects List  in JSON Response : 	<a href="#department-tabl
 <li>
 <p><em><strong>Endpoint Name:</strong></em> Post Review<br>
 <em><strong>Endpoint Description:</strong></em> Posts a currently authenticated user’s review.<br>
-<em><strong>Endpoint Request Method:</strong></em> POST<br>
-<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/user/me/postreview</em><br>
+<em><strong>Endpoint Request Method:</strong></em> POST/GET<br>
+<em><strong>Endpoint Full URL Path:</strong></em> <em>localhost:8080/api/user/me/postreview</em>/**(with required fields)<br>
 <em><strong>Endpoint Request Body Table:</strong></em></p>
  <h3 id="review-table">Review Data Object Table</h3>
 
