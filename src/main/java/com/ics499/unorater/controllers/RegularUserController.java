@@ -135,6 +135,7 @@ public class RegularUserController {
                                           @PathVariable String score) {
 
         Review review = new Review();
+        review.setUserID(userPrincipal.getId());
         review.setServiceID(serviceID);
         review.setReviewText(reviewText);
         review.setScore(score);

@@ -20,10 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
@@ -55,8 +52,12 @@ public class AuthController {
     @Autowired
     JwtTokenProvider tokenProvider;
 
-    @PostMapping("/signin")
-    public ResponseEntity<?> authenticateRegularUser(@Valid @RequestBody LoginRequest loginRequest) {
+    @RequestMapping(value = "/signin/{userNameorEmail}/{password}", method = { RequestMethod.GET, RequestMethod.POST })
+    public ResponseEntity<?> authenticateRegularUser(@PathVariable String userNameorEmail, @PathVariable String password) {
+
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setUsernameOrEmail(userNameorEmail);
+        loginRequest.setPassword(password);
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -68,11 +69,15 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = tokenProvider.generateToken(authentication);
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+        return ResponseEntity.ok(new ApiResponse(true, new JwtAuthenticationResponse(jwt).toString()));
     }
 
-    @PostMapping("/adminsignin")
-    public ResponseEntity<?> authenticateAdminUser(@Valid @RequestBody LoginRequest loginRequest) {
+    @RequestMapping(value = "/adminsignin/{userNameorEmail}/{password}", method = { RequestMethod.GET, RequestMethod.POST })
+    public ResponseEntity<?> authenticateAdminUser(@PathVariable String userNameorEmail, @PathVariable String password) {
+
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setUsernameOrEmail(userNameorEmail);
+        loginRequest.setPassword(password);
 
         User adminUser = userRepository.findByuserNameOrEmail(loginRequest.getUsernameOrEmail()
                 , loginRequest.getUsernameOrEmail());
@@ -99,8 +104,12 @@ public class AuthController {
                 HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/departmentadminsignin")
-    public ResponseEntity<?> authenticateDepartmentAdmin(@Valid @RequestBody LoginRequest loginRequest) {
+    @RequestMapping(value = "/departmentadminsignin/{userNameorEmail}/{password}", method = { RequestMethod.GET, RequestMethod.POST })
+    public ResponseEntity<?> authenticateDepartmentAdmin(@PathVariable String userNameorEmail, @PathVariable String password) {
+
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setUsernameOrEmail(userNameorEmail);
+        loginRequest.setPassword(password);
 
         User departmentAdminUser = userRepository.findByuserNameOrEmail(loginRequest.getUsernameOrEmail()
                 , loginRequest.getUsernameOrEmail());
@@ -128,8 +137,14 @@ public class AuthController {
     }
 
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+    @RequestMapping(value = "/signup/{userName}/{email}/{password}", method = { RequestMethod.GET, RequestMethod.POST })
+    public ResponseEntity<?> registerUser(@PathVariable String userName, @PathVariable String email, @PathVariable String password) {
+        SignUpRequest signUpRequest = new SignUpRequest();
+
+        signUpRequest.setEmail(email);
+        signUpRequest.setUserName(userName);
+        signUpRequest.setPassword(password);
+
         if(userRepository.existsByuserName(signUpRequest.getUserName())) {
             return new ResponseEntity(new ApiResponse(false, "Username is already taken!"),
                     HttpStatus.BAD_REQUEST);
