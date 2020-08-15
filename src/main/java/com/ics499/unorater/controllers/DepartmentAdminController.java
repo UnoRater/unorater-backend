@@ -1,5 +1,6 @@
 package com.ics499.unorater.controllers;
 
+import com.ics499.unorater.exceptions.AppException;
 import com.ics499.unorater.models.Department;
 import com.ics499.unorater.models.Service;
 import com.ics499.unorater.models.User;
@@ -9,6 +10,7 @@ import com.ics499.unorater.repositories.ServiceRepository;
 import com.ics499.unorater.repositories.UserRepository;
 import com.ics499.unorater.security.CurrentUser;
 import com.ics499.unorater.models.UserPrincipal;
+import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +41,13 @@ public class DepartmentAdminController {
 
     private static final Logger logger = LoggerFactory.getLogger(RegularUserController.class);
 
-    @PostMapping("/departmentadmin/addservice")
-    public ResponseEntity<?> addService (@RequestBody Service service, @CurrentUser UserPrincipal currentUser) {
+    @RequestMapping(value = "/departmentadmin/addservice/{serviceName}/{serviceDescription}", method = { RequestMethod.GET, RequestMethod.POST })
+    public ResponseEntity<?> addService (@PathVariable String serviceName, @PathVariable String serviceDescription, @CurrentUser UserPrincipal currentUser) {
 
+        Service service = new Service();
+
+        service.setServiceName(serviceName);
+        service.setServiceDescription(serviceDescription);
         User departmentAdminUser = userRepository.findById(currentUser.getId()).get();;
         logger.info("Current User: " + currentUser.toString());
         service.setDepartmentID(departmentAdminUser.getDepartmentNum());
@@ -51,14 +57,21 @@ public class DepartmentAdminController {
     }
 
     @GetMapping("/departmentadmin/services")
-    public Department viewDepartmentServices(@CurrentUser UserPrincipal currentUser) {
+    public List<Service> viewDepartmentServices(@CurrentUser UserPrincipal currentUser) {
         User departmentAdminUser = userRepository.findByuserNameOrEmail(currentUser.getUsername(), currentUser.getEmail());
-        return departmentRepository.findById(departmentAdminUser.getDepartmentNum()).get();
+        Department department =  departmentRepository.findById(departmentAdminUser.getDepartmentNum()).get();
+
+        return department.getServices();
     }
 
-    @PutMapping("/departmentadmin/update")
+    @PutMapping()
+    @RequestMapping(value = "/departmentadmin/update/{serviceID}/{newServiceName}/{newServiceDescription}", method = { RequestMethod.GET, RequestMethod.POST })
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> updateService (@RequestBody Service service) {
+    public ResponseEntity<?> updateService (@PathVariable Integer serviceID, @PathVariable String newServiceName, @PathVariable String newServiceDescription ) {
+        Service service = new Service();
+        service.setServiceID(serviceID);
+        service.setServiceName(newServiceName);
+        service.setServiceDescription(newServiceDescription);
         Service oldService = serviceRepository.findById(service.getServiceID()).get();
         oldService.setDateCreated(new Date());
         oldService.setServiceName(service.getServiceName());
@@ -68,10 +81,16 @@ public class DepartmentAdminController {
         return ResponseEntity.ok(new ApiResponse(true, "Service " + service.getServiceID() + " successfully updated"));
     }
 
-    @DeleteMapping("/departmentadmin/delete/{serviceID}")
+    @RequestMapping(value = "/departmentadmin/delete/{serviceID}", method = { RequestMethod.GET, RequestMethod.POST })
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> deleteService (@PathVariable Integer serviceID) {
-        serviceRepository.deleteById(serviceID);
+    public ResponseEntity<?> deleteService (@CurrentUser UserPrincipal currentUser, @PathVariable Integer serviceID) {
+        Service service = serviceRepository.findById(serviceID).get();
+        User user = userRepository.findByuserName(currentUser.getUsername());
+        if (user.getDepartmentNum() > service.getDepartmentID()) {
+            serviceRepository.deleteById(serviceID);
+        } else {
+            throw  new AppException("You do not have the permission to delete this resource");
+        }
         return ResponseEntity.ok(new ApiResponse(true, "Service " + serviceID + " successfully deleted"));
     }
 
